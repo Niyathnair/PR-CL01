@@ -5,6 +5,7 @@
 import type { Report } from "../lib/api";
 import { BAND_COLOR, type Band } from "../lib/api";
 import { Card, Chip, BandChip, Empty, emotionColor } from "../components/ui";
+import { INDIA_PATHS, INDIA_VB } from "../lib/indiaMap";
 
 /* ── Band 1: five L1 metrics across the top ── */
 export function L1Strip({ report }: { report: Report }) {
@@ -31,20 +32,38 @@ export function L1Strip({ report }: { report: Report }) {
   );
 }
 
-/* ── Band 2 left-upper: How do they feel (bar chart) ── */
+/* ── Band 2 left-upper: How do they feel — stacked segment bar with axis,
+   in the style of the reference image (proportional horizontal segments). ── */
 export function FeelChart({ report }: { report: Report }) {
   const er = report.feeling.emotional_response;
-  const entries = Object.entries(er.distribution).sort((a, b) => b[1] - a[1]);
-  const max = Math.max(...entries.map((e) => e[1]), 0.01);
+  const entries = Object.entries(er.distribution).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+  const total = entries.reduce((s, [, v]) => s + v, 0) || 1;
+  // Axis ticks at 0 / 50 / 100 % of the audience.
   return (
     <Card title="How do they feel?">
-      <div className="feelbars">
+      <div className="segbar">
         {entries.map(([e, v]) => (
-          <div key={e} className="feelbar">
-            <div className="feelbar__col" style={{ height: `${(v / max) * 100}%`, background: emotionColor(e) }} />
-            <div className="feelbar__pct tabular">{(v * 100).toFixed(0)}</div>
-            <div className="feelbar__lbl">{e}</div>
+          <div
+            key={e}
+            className="segbar__seg"
+            style={{ width: `${(v / total) * 100}%`, background: emotionColor(e) }}
+            title={`${e}: ${(v * 100).toFixed(0)}%`}
+          >
+            {v / total > 0.08 && <span className="segbar__lbl">{e}</span>}
           </div>
+        ))}
+      </div>
+      <div className="segbar__axis tabular">
+        <span>0%</span>
+        <span>50%</span>
+        <span>100%</span>
+      </div>
+      <div className="segbar__legend">
+        {entries.map(([e, v]) => (
+          <span key={e} className="segbar__key">
+            <span className="segbar__dot" style={{ background: emotionColor(e) }} />
+            {e} <span className="tabular mut">{(v * 100).toFixed(0)}%</span>
+          </span>
         ))}
       </div>
       {er.polarization > 0.3 && (
@@ -54,28 +73,79 @@ export function FeelChart({ report }: { report: Report }) {
   );
 }
 
-/* ── Band 2 left-lower: comment word-cloud (size ∝ how many react that way) ── */
+/* ── Band 2 left-lower: "What they're saying" as a TREEMAP.
+   Boxes sized by how many react that way, tinted on a red→green scale with the
+   most-negative reaction the biggest/reddest, the most-positive smallest/green,
+   with the comment text inside each box. ── */
+
+// Squarified-ish treemap: simple slice-and-dice that alternates split direction,
+// good enough for ~8-12 boxes and keeps boxes readable.
+interface TNode { text: string; weight: number; sentiment: string; label: string; tone: number }
+function layoutTreemap(items: TNode[], x: number, y: number, w: number, h: number, horizontal: boolean): Array<TNode & { x: number; y: number; w: number; h: number }> {
+  if (items.length === 0) return [];
+  if (items.length === 1) return [{ ...items[0], x, y, w, h }];
+  const total = items.reduce((s, i) => s + i.weight, 0) || 1;
+  // Split items into two halves of roughly equal weight.
+  let acc = 0, idx = 0;
+  for (let i = 0; i < items.length; i++) { acc += items[i].weight; if (acc >= total / 2) { idx = i + 1; break; } }
+  idx = Math.max(1, Math.min(items.length - 1, idx));
+  const a = items.slice(0, idx), b = items.slice(idx);
+  const aw = a.reduce((s, i) => s + i.weight, 0) / total;
+  if (horizontal) {
+    const wa = w * aw;
+    return [...layoutTreemap(a, x, y, wa, h, false), ...layoutTreemap(b, x + wa, y, w - wa, h, false)];
+  } else {
+    const ha = h * aw;
+    return [...layoutTreemap(a, x, y, w, ha, true), ...layoutTreemap(b, x, y + ha, w, h - ha, true)];
+  }
+}
+
+// Red (bad) → green (good) tint from a signed tone in [-1, 1].
+function toneColor(tone: number): string {
+  if (tone > 0.15) return "var(--band-clear)"; // favourable → green
+  if (tone < -0.5) return "var(--band-severe)"; // strongly negative → red
+  if (tone < -0.15) return "var(--band-high)"; // negative → orange-red
+  return "var(--cat-7)"; // neutral → grey
+}
+
 export function CommentCloud({ report }: { report: Report }) {
   const cs = report.feeling.simulated_comments;
-  // Size by prevalence weight; color by emotion.
-  const maxW = Math.max(...cs.map((c) => c.weight), 0.01);
+  const reactions = report.feeling.persona_reactions;
+  const sentOf: Record<string, string> = {};
+  const sevOf: Record<string, number> = {};
+  for (const r of reactions) { sentOf[r.persona_id] = r.sentiment; sevOf[r.persona_id] = r.severity; }
+
+  const nodes: TNode[] = cs.map((c) => {
+    const sent = sentOf[c.persona_id] || "indifferent";
+    const sev = sevOf[c.persona_id] ?? 0.2;
+    // tone: negative sentiment pushes toward red (scaled by severity), favourable toward green.
+    const tone = sent === "opposed" ? -sev : sent === "favorable" ? 0.6 : -0.05;
+    return { text: c.text, weight: Math.max(c.weight, 0.02), sentiment: sent, label: c.label, tone };
+  });
+  // Biggest + reddest first: sort by weight desc so the layout places large boxes first.
+  nodes.sort((a, b) => b.weight - a.weight);
+  const boxes = layoutTreemap(nodes, 0, 0, 100, 100, true);
+
   return (
     <Card title="What they're saying">
-      <div className="cloud">
-        {cs.map((c, i) => {
-          const scale = 0.8 + (c.weight / maxW) * 1.1;
-          return (
-            <span
-              key={i}
-              className="cloud__word"
-              style={{ fontSize: `${scale}em`, color: emotionColor(c.emotion) }}
-              title={`${c.label} · ${c.tone}`}
-            >
-              "{c.text}"
+      <div className="treemap">
+        {boxes.map((box, i) => (
+          <div
+            key={i}
+            className="tm-box"
+            style={{
+              left: `${box.x}%`, top: `${box.y}%`, width: `${box.w}%`, height: `${box.h}%`,
+              background: toneColor(box.tone),
+            }}
+            title={`${box.label}`}
+          >
+            <span className="tm-text" style={{ fontSize: `${Math.min(15, 8 + box.w * 0.08 + box.h * 0.04)}px` }}>
+              "{box.text}"
             </span>
-          );
-        })}
+          </div>
+        ))}
       </div>
+      <div className="tiny mut" style={{ marginTop: 8 }}>Box size = how many react that way. Red = negative, green = positive.</div>
     </Card>
   );
 }
@@ -120,15 +190,24 @@ export function CampaignHighlight({ report, onRewrite }: { report: Report; onRew
   );
 }
 
-/* ── Band 3: persona illustrations, positive left / negative right ── */
+/* ── Band 3: persona illustrations, positive left / negative right ──
+   Faces are the supplied person SVGs, assigned deterministically per persona. */
+
+// Stable string hash → 1..28 face index.
+function faceFor(id: string): string {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  const n = (h % 28) + 1;
+  return `/faces/person_${String(n).padStart(2, "0")}.svg`;
+}
+
 function PersonaFace({ p }: { p: Report["feeling"]["persona_reactions"][0] }) {
   const positive = p.sentiment === "favorable";
   const negative = p.sentiment === "opposed";
   const feeling = negative ? "offended" : positive ? "likes it" : "neutral";
   const pct = Math.round(p.severity * 100);
   const short = p.label.length > 28 ? p.label.slice(0, 28) + "…" : p.label;
-  // Simple demographic-driven avatar: color by region-ish hash, emoji by emotion.
-  const emoji = { offended: "😠", uncomfortable: "😟", confused: "😕", neutral: "😐", curious: "🤔", amused: "😄", positive: "😊" }[p.emotion] || "🙂";
+  const ring = negative ? "var(--band-high)" : positive ? "var(--band-clear)" : "var(--cat-7)";
   return (
     <div className="face" tabIndex={0}>
       <div className="face__top">
@@ -136,7 +215,9 @@ function PersonaFace({ p }: { p: Report["feeling"]["persona_reactions"][0] }) {
           {feeling} {negative || positive ? `${pct}%` : ""}
         </span>
       </div>
-      <div className="face__emoji" style={{ background: emotionColor(p.emotion) }}>{emoji}</div>
+      <div className="face__img" style={{ borderColor: ring }}>
+        <img src={faceFor(p.persona_id)} alt={p.label} loading="lazy" />
+      </div>
       <div className="face__demo">{short}</div>
       <div className="face__pop">
         <strong>{p.label}</strong>
@@ -163,36 +244,50 @@ export function PersonaBoards({ report }: { report: Report }) {
   );
 }
 
-/* ── Band 4a: India region heatmap (schematic map) ── */
-const IN_POS: Record<string, [number, number]> = {
-  DL: [46, 30], PB: [40, 24], HR: [44, 30], RJ: [34, 38], GJ: [26, 50],
-  MH: [38, 58], MP: [46, 46], UP: [54, 36], BR: [64, 40], WB: [70, 48],
-  AS: [82, 40], KA: [42, 72], TG: [50, 62], AP: [52, 70], TN: [46, 84], KL: [40, 84],
-};
+/* ── Band 4a: India region heatmap — the real India SVG, states tinted by
+   signed intensity (red = offended, green = favourable). ── */
 export function IndiaHeatmap({ report }: { report: Report }) {
   const geo = report.geo_india;
-  const color = (t: number) => (t > 0.15 ? "var(--band-high)" : t < -0.15 ? "var(--band-clear)" : "var(--cat-7)");
+  // Map "MH" -> intensity, keyed the way the SVG ids are ("IN-MH").
+  const byId: Record<string, { intensity: number; name: string }> = {};
+  for (const s of geo.states) byId[`IN-${s.code}`] = { intensity: s.intensity, name: s.name };
+
+  const fill = (t: number | undefined) => {
+    if (t === undefined) return "var(--surface-raised)";
+    if (t > 0.5) return "var(--band-severe)";
+    if (t > 0.15) return "var(--band-high)";
+    if (t < -0.15) return "var(--band-clear)";
+    return "var(--cat-7)";
+  };
+
   return (
     <Card title="India — regional response">
       {!geo.available ? (
         <Empty>No India regional signal.</Empty>
       ) : (
         <>
-          <svg viewBox="0 0 100 100" className="india-map">
-            <path d="M40 18 L58 20 L64 32 L82 36 L80 46 L66 50 L62 60 L54 68 L48 88 L42 86 L38 66 L26 56 L24 46 L30 38 L34 26 Z" fill="var(--surface-raised)" stroke="var(--hairline)" strokeWidth="0.6" />
-            {geo.states.map((s) => {
-              const pos = IN_POS[s.code];
-              if (!pos) return null;
+          <svg viewBox={INDIA_VB} className="india-map" preserveAspectRatio="xMidYMid meet">
+            {INDIA_PATHS.map((st) => {
+              const hit = byId[st.id];
               return (
-                <circle key={s.code} cx={pos[0]} cy={pos[1]} r={2.4 + Math.abs(s.intensity) * 2.4}
-                  fill={color(s.intensity)} fillOpacity={0.55 + Math.abs(s.intensity) * 0.4}>
-                  <title>{s.name}: {s.intensity > 0 ? "offended" : "favourable"} {Math.abs(s.intensity * 100).toFixed(0)}%</title>
-                </circle>
+                <path
+                  key={st.id}
+                  d={st.d}
+                  fill={fill(hit?.intensity)}
+                  fillOpacity={hit ? 0.4 + Math.abs(hit.intensity) * 0.55 : 1}
+                  stroke="var(--hairline)"
+                  strokeWidth="0.7"
+                >
+                  <title>
+                    {st.title}
+                    {hit ? `: ${hit.intensity > 0 ? "offended" : "favourable"} ${Math.abs(hit.intensity * 100).toFixed(0)}%` : ""}
+                  </title>
+                </path>
               );
             })}
           </svg>
-          <div className="row" style={{ gap: 12, marginTop: 8 }}>
-            <Chip><span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--band-high)", display: "inline-block" }} /> offended</Chip>
+          <div className="row" style={{ gap: 12, marginTop: 8, justifyContent: "center" }}>
+            <Chip><span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--band-severe)", display: "inline-block" }} /> offended</Chip>
             <Chip><span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--band-clear)", display: "inline-block" }} /> favourable</Chip>
           </div>
         </>

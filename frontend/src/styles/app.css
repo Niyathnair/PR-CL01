@@ -439,3 +439,37 @@
 .cmp-bars { display: flex; gap: 4px; height: 40px; align-items: flex-end; margin-top: 8px; }
 .cmp-bar { flex: 1; height: 100%; display: flex; align-items: flex-end; background: var(--surface); border-radius: 4px; overflow: hidden; }
 .cmp-bar > div { width: 100%; border-radius: 4px 4px 0 0; }
+
+/* ── Feel: stacked segment bar (reference-image style) ── */
+.segbar { display: flex; height: 56px; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-card); }
+.segbar__seg { display: flex; align-items: center; justify-content: center; min-width: 2px; transition: width var(--dur-md) var(--ease); }
+.segbar__lbl { font-size: 11px; font-weight: 500; color: var(--ink); mix-blend-mode: multiply; padding: 0 4px; white-space: nowrap; overflow: hidden; }
+.segbar__axis { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-top: 6px; }
+.segbar__legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.segbar__key { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-primary); }
+.segbar__dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+/* ── Treemap ── */
+.treemap { position: relative; width: 100%; aspect-ratio: 16 / 11; border-radius: var(--radius-inner); overflow: hidden; box-shadow: var(--shadow-card); }
+.tm-box {
+  position: absolute; box-sizing: border-box; border: 2px solid var(--surface);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+  padding: 6px;
+}
+.tm-text {
+  color: var(--ink); font-weight: 500; line-height: 1.25; text-align: center;
+  display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+  text-shadow: 0 1px 2px rgba(255,255,255,.35);
+}
+
+/* ── Persona face images (SVG portraits) ── */
+.face__img {
+  width: 72px; height: 72px; border-radius: 50%; margin: 6px auto;
+  overflow: hidden; border: 3px solid var(--cat-7); background: var(--surface-raised);
+  box-shadow: var(--shadow-card);
+}
+.face__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ── India real map (taller) ── */
+.india-map { width: 100%; max-height: 320px; height: 300px; display: block; }
+.india-map path { transition: fill var(--dur-md) var(--ease); }
