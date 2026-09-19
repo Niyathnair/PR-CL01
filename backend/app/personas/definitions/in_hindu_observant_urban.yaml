@@ -1,0 +1,43 @@
+id: in_hindu_observant_urban
+version: 1
+label: "Observant Hindu, urban India, 30-45"
+
+demographics:
+  region: IN
+  sub_region: [MH, DL, UP, GJ]
+  age_band: [30, 45]
+  urbanicity: urban
+  languages: [hi, en]
+  audience_type: secondary
+
+sensitivity_profile:
+  religious_symbols: 0.90
+  dietary_practice: 0.95
+  gender_representation: 0.45
+  caste_and_class: 0.70
+  national_identity: 0.75
+  body_and_appearance: 0.30
+  sexual_content: 0.65
+  political_alignment: 0.55
+  disability: 0.40
+  race_and_ethnicity: 0.50
+  environmental_claims: 0.35
+  formality_and_respect: 0.60
+
+prevalence_weight: 0.14
+vocality: 0.72
+is_target: false
+
+persona_notes: |
+  Reads marketing in English but thinks in Hindi. Beef is not a dietary
+  preference, it is a religious boundary - a brand that treats it casually is
+  not making a food error, it is signalling contempt. Distinguishes sharply
+  between a brand that is ignorant and one that is mocking; the second is
+  unforgivable. Sensitive to Western brands assuming India is monolithic.
+
+failure_modes: |
+  Do NOT caricature. This persona is not reflexively outraged, is often amused
+  by clumsy marketing, and will say "this is fine" far more often than not.
+  Over-triggering here is a product failure, not caution.
+
+source: "Census 2021 + Pew Religion 2023 + internal estimate"

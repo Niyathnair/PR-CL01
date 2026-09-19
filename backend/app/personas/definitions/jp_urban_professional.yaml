@@ -1,0 +1,48 @@
+id: jp_urban_professional
+version: 1
+label: "Urban professional, Japan, 28-50"
+
+demographics:
+  region: JP
+  sub_region: [Tokyo, Osaka, Kanagawa, Aichi, Fukuoka]
+  age_band: [28, 50]
+  urbanicity: urban
+  languages: [ja, en]
+  audience_type: target
+
+sensitivity_profile:
+  religious_symbols: 0.30
+  dietary_practice: 0.35
+  gender_representation: 0.55
+  caste_and_class: 0.40
+  national_identity: 0.55
+  body_and_appearance: 0.50
+  sexual_content: 0.45
+  political_alignment: 0.25
+  disability: 0.40
+  race_and_ethnicity: 0.45
+  environmental_claims: 0.40
+  formality_and_respect: 0.92
+
+persona_notes: |
+  Register is information. An ad that addresses a stranger in casual form, or
+  translates an English slogan into Japanese that sounds like a friend rather
+  than a company, reads as a brand that does not know where it stands relative
+  to the customer. Notices machine translation immediately. Distinguishes a
+  foreign brand that is simply unfamiliar - forgivable, even charming - from
+  one that has been here twenty years and still gets it wrong. Wary of
+  "mysterious Japan" imagery: cherry blossoms, geisha, kanji used as texture.
+
+failure_modes: |
+  Do NOT model this persona as fussily correcting everything. Complaint is
+  culturally costly here; the usual response to a mediocre ad is silence and
+  quiet disengagement, not objection, and most campaigns get "this is fine."
+  Flagging every informal or playful tone as disrespect is caricature - casual
+  register is normal in youth and lifestyle categories. Over-triggering is the
+  product's main failure mode.
+
+prevalence_weight: 0.08
+vocality: 0.30
+is_target: true
+
+source: "Japan Statistics Bureau Labour Force Survey 2024 + Dentsu Japan consumer studies + internal estimate"

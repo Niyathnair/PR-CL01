@@ -1,0 +1,55 @@
+{
+  "scenario": "climate_summit",
+  "description": "Active international climate summit. Greenwashing scrutiny elevated; sustainability claims are being fact-checked in near real time. Fictional headlines attributed to invented outlets.",
+  "items": [
+    {
+      "headline": "Summit opens with regulators promising action on unverifiable sustainability claims",
+      "source": "National Daily",
+      "date": "2026-09-15",
+      "stance": "neutral",
+      "salience": 0.9
+    },
+    {
+      "headline": "Beverage group's 'carbon neutral' label withdrawn after offset audit",
+      "source": "Business Standard Weekly",
+      "date": "2026-09-17",
+      "stance": "critical",
+      "salience": 0.85
+    },
+    {
+      "headline": "Campaigners publish live scorecard rating summit sponsors' green claims",
+      "source": "The Evening Ledger",
+      "date": "2026-09-16",
+      "stance": "critical",
+      "salience": 0.73
+    },
+    {
+      "headline": "Packaging firm's recycling pledge praised as unusually specific",
+      "source": "The Regional Post",
+      "date": "2026-09-18",
+      "stance": "supportive",
+      "salience": 0.41
+    }
+  ],
+  "heat_by_topic": {
+    "climate_policy": 0.92,
+    "greenwashing": 0.88,
+    "corporate_accountability": 0.7,
+    "supply_chains": 0.52,
+    "packaging_and_waste": 0.46
+  },
+  "heat_by_axis": {
+    "environmental_claims": 0.9,
+    "political_alignment": 0.45,
+    "national_identity": 0.3,
+    "caste_and_class": 0.22,
+    "formality_and_respect": 0.18
+  },
+  "active_controversies": [
+    "Offset-based 'carbon neutral' labelling is being actively debunked during the summit",
+    "Sponsor green claims are being scored publicly and in real time",
+    "Vague sustainability language is drawing more criticism than making no claim at all"
+  ],
+  "as_of": "2026-09-19",
+  "provenance": "mock"
+}

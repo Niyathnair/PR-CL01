@@ -1,0 +1,63 @@
+{
+  "scenario": "dietary_controversy_india",
+  "description": "Active dietary-religious news cycle in India. Fictional headlines attributed to invented outlets.",
+  "items": [
+    {
+      "headline": "Snack brand withdraws regional campaign after backlash over meat imagery in festival ad",
+      "source": "National Daily",
+      "date": "2026-09-17",
+      "stance": "critical",
+      "salience": 0.92
+    },
+    {
+      "headline": "Two states widen livestock transport restrictions ahead of festival season",
+      "source": "The Regional Post",
+      "date": "2026-09-15",
+      "stance": "neutral",
+      "salience": 0.84
+    },
+    {
+      "headline": "Restaurant association warns members over menu language as dietary complaints triple",
+      "source": "Business Standard Weekly",
+      "date": "2026-09-16",
+      "stance": "neutral",
+      "salience": 0.71
+    },
+    {
+      "headline": "Opinion: brands keep treating what people eat as a punchline, and keep paying for it",
+      "source": "The Evening Ledger",
+      "date": "2026-09-18",
+      "stance": "critical",
+      "salience": 0.66
+    },
+    {
+      "headline": "Delivery platform apologises for push notification joking about fasting customers",
+      "source": "Metro Tribune",
+      "date": "2026-09-12",
+      "stance": "critical",
+      "salience": 0.58
+    }
+  ],
+  "heat_by_topic": {
+    "food_and_diet": 0.93,
+    "religion_and_festivals": 0.78,
+    "advertising_backlash": 0.72,
+    "state_regulation": 0.55,
+    "hospitality_industry": 0.41
+  },
+  "heat_by_axis": {
+    "dietary_practice": 0.9,
+    "religious_symbols": 0.7,
+    "caste_and_class": 0.45,
+    "national_identity": 0.35,
+    "formality_and_respect": 0.3,
+    "political_alignment": 0.28
+  },
+  "active_controversies": [
+    "Snack brand's withdrawn festival ad is still circulating with mocking captions",
+    "Renewed argument over meat imagery in mainstream advertising during festival season",
+    "Delivery-app notification joking about fasting is being used as the example of what not to do"
+  ],
+  "as_of": "2026-09-19",
+  "provenance": "mock"
+}

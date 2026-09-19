@@ -1,0 +1,10 @@
+{
+  "scenario": "quiet",
+  "description": "Baseline reference. Nothing notable in the news cycle on any sensitivity axis. This is the kappa=1.0 fixture: a run against it scores identically to a run with no context layer at all.",
+  "items": [],
+  "heat_by_topic": {},
+  "heat_by_axis": {},
+  "active_controversies": [],
+  "as_of": "2026-09-19",
+  "provenance": "mock"
+}

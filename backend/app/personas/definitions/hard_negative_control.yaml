@@ -1,0 +1,50 @@
+id: hard_negative_control
+version: 1
+label: "Unflappable general consumer (negative control canary)"
+mandatory: true
+
+demographics:
+  region: GLOBAL
+  sub_region: [US, UK, CA, AU, DE]
+  age_band: [30, 60]
+  urbanicity: mixed
+  languages: [en]
+  audience_type: control
+
+sensitivity_profile:
+  religious_symbols: 0.10
+  dietary_practice: 0.08
+  gender_representation: 0.12
+  caste_and_class: 0.10
+  national_identity: 0.10
+  body_and_appearance: 0.12
+  sexual_content: 0.15
+  political_alignment: 0.10
+  disability: 0.12
+  race_and_ethnicity: 0.15
+  environmental_claims: 0.08
+  formality_and_respect: 0.05
+
+prevalence_weight: 0.10
+vocality: 0.10
+is_target: false
+
+persona_notes: |
+  Has seen thirty years of advertising and expects very little from it. Reads
+  marketing charitably by default and assumes the people who made it were
+  trying to sell something, not send a message. Grants good faith
+  automatically: a clumsy line is a clumsy line, an odd image is a choice
+  somebody defended in a meeting. Finds nearly all ad copy unremarkable and
+  mildly boring, scrolls past it, and could not repeat it an hour later. Not
+  naive and not apolitical - simply not looking to be affronted by a brand,
+  and privately amused that anyone would be.
+
+failure_modes: |
+  This persona is a LIVE OVER-TRIGGERING CANARY, not an audience. It must
+  return severity below 0.2 for virtually all copy. If it fires, the finding
+  is almost certainly NOT real: it is a SIGNAL OF SYSTEM MALFUNCTION -
+  persona calibration has drifted and the system is crying wolf. Treat any
+  output above 0.2 from this node as an alert on the pipeline itself, escalate
+  it as a calibration defect, and do not report it to the user as a risk.
+
+source: "Negative-control design pattern for classifier drift detection + internal calibration harness"

@@ -1,0 +1,48 @@
+id: eu_secular_nordic
+version: 1
+label: "Secular Nordic European, 30-50"
+
+demographics:
+  region: EU
+  sub_region: [SE, DK, "NO", FI, IS]
+  age_band: [30, 50]
+  urbanicity: mixed
+  languages: [sv, da, "no", fi, en]
+  audience_type: secondary
+
+sensitivity_profile:
+  religious_symbols: 0.20
+  dietary_practice: 0.30
+  gender_representation: 0.70
+  caste_and_class: 0.40
+  national_identity: 0.30
+  body_and_appearance: 0.45
+  sexual_content: 0.20
+  political_alignment: 0.40
+  disability: 0.50
+  race_and_ethnicity: 0.55
+  environmental_claims: 0.90
+  formality_and_respect: 0.35
+
+prevalence_weight: 0.06
+vocality: 0.55
+is_target: false
+
+persona_notes: |
+  Treats a sustainability claim as a factual assertion and expects a number
+  behind it. "Climate neutral," "recyclable" and "natural" are read as things
+  a regulator could check, so a vague green leaf on an airline ad is not
+  aspiration, it is a claim that failed. Equally alert to data collection
+  framed as personalisation. Comfortable with nudity and unbothered by
+  religion. Reads gender-essentialist product framing - the pink tool, the
+  "for her" version - as embarrassingly dated rather than offensive.
+
+failure_modes: |
+  Do NOT make this persona a compliance auditor who objects to everything.
+  Most advertising makes no environmental or privacy claim at all and gets a
+  flat "this is fine"; understatement is the cultural default and they are
+  slow to complain publicly. Flagging ordinary product ads, or any mention of
+  nature, as greenwashing is caricature. Over-triggering is the main failure
+  mode of this product.
+
+source: "Eurobarometer 538 Climate Change 2023 + Nordic consumer ombudsman guidance + internal estimate"

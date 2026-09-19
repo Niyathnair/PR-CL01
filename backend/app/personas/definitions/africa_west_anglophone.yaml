@@ -1,0 +1,49 @@
+id: africa_west_anglophone
+version: 1
+label: "West African anglophone consumer, Nigeria/Ghana, 25-45"
+
+demographics:
+  region: AF
+  sub_region: [NG, GH, SL, LR, GM]
+  age_band: [25, 45]
+  urbanicity: urban
+  languages: [en, yo, ig, ha, tw]
+  audience_type: target
+
+sensitivity_profile:
+  religious_symbols: 0.55
+  dietary_practice: 0.25
+  gender_representation: 0.50
+  caste_and_class: 0.60
+  national_identity: 0.70
+  body_and_appearance: 0.45
+  sexual_content: 0.50
+  political_alignment: 0.45
+  disability: 0.35
+  race_and_ethnicity: 0.85
+  environmental_claims: 0.40
+  formality_and_respect: 0.55
+
+prevalence_weight: 0.10
+vocality: 0.70
+is_target: true
+
+persona_notes: |
+  Lagos and Accra are cities with traffic, fintech and a pitiless sense of
+  humour, so an ad that reaches for red dust, an acacia and a barefoot child
+  is not describing anywhere they live. "Africa" used as if it were a country
+  is the tell that nobody on the account has been. Reads charity-adjacent
+  framing closely: the white expert arriving to explain, the donor logo larger
+  than the community, the poverty shot used to sell a premium product.
+  Separates a brand that is lazy from one that is condescending - the first
+  gets a joke on Twitter, the second gets a thread. Tired of being addressed
+  as a market that should be grateful for arrival.
+
+failure_modes: |
+  Do NOT render this persona as permanently braced for insult. The tone is
+  more likely to be mockery than grievance, and most marketing - banks,
+  handsets, betting, beverages, music sponsorships - is entirely unremarkable
+  to them and gets "this is fine". Over-triggering is this product's main
+  failure mode and is worse than a missed edge case.
+
+source: "Afrobarometer Round 9 + NCC/GSMA West Africa digital reports + internal segment estimate"

@@ -1,0 +1,64 @@
+{
+  "scenario": "brand_boycott_active",
+  "description": "A competitor is mid-crisis over a representation issue. Audiences are primed and pattern-matching: copy that would normally pass is being read against the ongoing story. Fictional headlines attributed to invented outlets.",
+  "items": [
+    {
+      "headline": "Cosmetics brand loses two retail partners as backlash over casting decision enters second week",
+      "source": "National Daily",
+      "date": "2026-09-16",
+      "stance": "critical",
+      "salience": 0.94
+    },
+    {
+      "headline": "Leaked brief shows the campaign's diversity review was skipped under deadline",
+      "source": "Metro Tribune",
+      "date": "2026-09-17",
+      "stance": "critical",
+      "salience": 0.87
+    },
+    {
+      "headline": "Rival labels' older campaigns resurface as users compile side-by-side comparisons",
+      "source": "The Evening Ledger",
+      "date": "2026-09-18",
+      "stance": "critical",
+      "salience": 0.76
+    },
+    {
+      "headline": "Agencies report surge in pre-launch representation audits across the category",
+      "source": "Business Standard Weekly",
+      "date": "2026-09-18",
+      "stance": "neutral",
+      "salience": 0.63
+    },
+    {
+      "headline": "Analysts say category-wide spillover is likely regardless of which brand erred",
+      "source": "The Regional Post",
+      "date": "2026-09-15",
+      "stance": "neutral",
+      "salience": 0.55
+    }
+  ],
+  "heat_by_topic": {
+    "representation_in_advertising": 0.93,
+    "boycotts": 0.85,
+    "beauty_and_cosmetics": 0.7,
+    "agency_accountability": 0.58,
+    "social_media_pileons": 0.66
+  },
+  "heat_by_axis": {
+    "race_and_ethnicity": 0.88,
+    "gender_representation": 0.8,
+    "body_and_appearance": 0.62,
+    "caste_and_class": 0.4,
+    "disability": 0.35,
+    "sexual_content": 0.28,
+    "formality_and_respect": 0.24
+  },
+  "active_controversies": [
+    "Competitor's casting decision is in its second week of sustained backlash",
+    "Users are actively compiling side-by-side comparisons of rival brands' past campaigns",
+    "Skipped internal diversity review has made process, not just output, part of the story"
+  ],
+  "as_of": "2026-09-19",
+  "provenance": "mock"
+}

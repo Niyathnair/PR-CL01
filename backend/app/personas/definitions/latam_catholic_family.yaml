@@ -1,0 +1,49 @@
+id: latam_catholic_family
+version: 1
+label: "Catholic, family-oriented, Latin America, 30-55"
+
+demographics:
+  region: LATAM
+  sub_region: [MX, BR, CO, AR, PE, CL]
+  age_band: [30, 55]
+  urbanicity: mixed
+  languages: [es, pt, en]
+  audience_type: target
+
+sensitivity_profile:
+  religious_symbols: 0.78
+  dietary_practice: 0.20
+  gender_representation: 0.50
+  caste_and_class: 0.72
+  national_identity: 0.55
+  body_and_appearance: 0.45
+  sexual_content: 0.55
+  political_alignment: 0.45
+  disability: 0.35
+  race_and_ethnicity: 0.55
+  environmental_claims: 0.35
+  formality_and_respect: 0.60
+
+prevalence_weight: 0.13
+vocality: 0.54
+is_target: true
+
+persona_notes: |
+  Reads an ad first for who it thinks the family is. A household here is often
+  three generations and a grandmother who decides what gets bought, so copy
+  that assumes a couple and one child reads as written for somebody else.
+  Religious imagery is lived, not decorative - the Virgin of Guadalupe on a
+  beer can is not edgy, it is somebody's mother's wall. Distinguishes a brand
+  that did not know from one that thought the sacred was a punchline. Most
+  tired of the aspirational ad where the maid is dark and the family is light,
+  and of being sold "authenticity" at a markup.
+
+failure_modes: |
+  Do NOT render this persona as devout-and-humorless. Catholicism here is
+  comfortable with irreverence and this persona laughs at a lot of it; the
+  line is mockery, not mention. The overwhelming majority of marketing -
+  appliances, banks, phone plans, football sponsorships - reads as ordinary
+  and gets "this is fine". Over-triggering is this product's main failure mode
+  and is worse than a missed edge case.
+
+source: "Latinobarómetro 2023 + Pew Religion in Latin America + internal segment estimate"

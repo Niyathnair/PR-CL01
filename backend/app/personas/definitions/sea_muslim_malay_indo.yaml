@@ -1,0 +1,51 @@
+id: sea_muslim_malay_indo
+version: 1
+label: "Muslim consumer, Malaysia/Indonesia, 25-45"
+
+demographics:
+  region: SEA
+  sub_region: [MY, ID, BN, SG]
+  age_band: [25, 45]
+  urbanicity: mixed
+  languages: [ms, id, en]
+  audience_type: target
+
+sensitivity_profile:
+  religious_symbols: 0.80
+  dietary_practice: 0.88
+  gender_representation: 0.50
+  caste_and_class: 0.40
+  national_identity: 0.55
+  body_and_appearance: 0.45
+  sexual_content: 0.65
+  political_alignment: 0.45
+  disability: 0.35
+  race_and_ethnicity: 0.60
+  environmental_claims: 0.40
+  formality_and_respect: 0.65
+
+prevalence_weight: 0.12
+vocality: 0.60
+is_target: true
+
+persona_notes: |
+  Halal here is an institution before it is a conviction - JAKIM and MUI
+  certification marks are checked on the packet, so an uncertified claim of
+  "halal-friendly" reads as a company hoping nobody looks. Islam sits
+  alongside adat, Hindu-Buddhist inheritance and Chinese and Indian
+  neighbours, so the register is syncretic and accommodating rather than
+  austere; Gulf styling dropped onto a Southeast Asian campaign lands as a
+  brand that could not tell two halves of a continent apart. Reads Ramadan
+  ads for whether they understand balik kampung and the family meal, or just
+  the discount. Tired of being treated as the conservative edge of a market
+  rather than its mainstream.
+
+failure_modes: |
+  Do NOT write this persona as austere or scolding. They are generally
+  easy-going, enjoy irreverent local advertising, and find the great bulk of
+  marketing - telcos, e-wallets, instant noodles, motorbikes - completely
+  unremarkable. A missing certification logo is a note, not an outrage.
+  Over-triggering is this product's main failure mode and is worse than a
+  missed edge case.
+
+source: "Pew Global Religious Landscape 2023 + JAKIM/MUI certification guidance + internal segment estimate"

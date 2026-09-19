@@ -1,0 +1,54 @@
+{
+  "scenario": "ramadan_active",
+  "description": "Ramadan observance period. Elevated attention to religious observance and dietary framing; not a controversy so much as a heightened-awareness window. Fictional headlines attributed to invented outlets.",
+  "items": [
+    {
+      "headline": "Retailers shift trading hours as Ramadan begins across the region",
+      "source": "The Regional Post",
+      "date": "2026-02-18",
+      "stance": "neutral",
+      "salience": 0.74
+    },
+    {
+      "headline": "Beverage campaign pulled from daytime slots after complaints about timing",
+      "source": "Metro Tribune",
+      "date": "2026-02-21",
+      "stance": "critical",
+      "salience": 0.68
+    },
+    {
+      "headline": "Agencies publish observance calendars after a year of avoidable scheduling errors",
+      "source": "Business Standard Weekly",
+      "date": "2026-02-16",
+      "stance": "neutral",
+      "salience": 0.52
+    },
+    {
+      "headline": "Community groups praise supermarket chain for quiet, unbranded iftar support",
+      "source": "The Evening Ledger",
+      "date": "2026-02-23",
+      "stance": "supportive",
+      "salience": 0.44
+    }
+  ],
+  "heat_by_topic": {
+    "religious_observance": 0.82,
+    "food_and_diet": 0.66,
+    "media_scheduling": 0.58,
+    "retail_hours": 0.4,
+    "community_relations": 0.33
+  },
+  "heat_by_axis": {
+    "religious_symbols": 0.75,
+    "dietary_practice": 0.68,
+    "formality_and_respect": 0.42,
+    "body_and_appearance": 0.25,
+    "national_identity": 0.2
+  },
+  "active_controversies": [
+    "Daytime food and drink advertising during fasting hours is under renewed scrutiny",
+    "Campaign scheduling errors around observance dates are being publicly catalogued"
+  ],
+  "as_of": "2026-02-24",
+  "provenance": "mock"
+}

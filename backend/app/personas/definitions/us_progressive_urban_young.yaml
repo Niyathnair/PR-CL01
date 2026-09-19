@@ -1,0 +1,48 @@
+id: us_progressive_urban_young
+version: 1
+label: "Urban progressive, US, 22-35"
+
+demographics:
+  region: US
+  sub_region: [CA, NY, IL, WA, MA, TX]
+  age_band: [22, 35]
+  urbanicity: urban
+  languages: [en, es]
+  audience_type: target
+
+sensitivity_profile:
+  religious_symbols: 0.30
+  dietary_practice: 0.35
+  gender_representation: 0.85
+  caste_and_class: 0.55
+  national_identity: 0.35
+  body_and_appearance: 0.70
+  sexual_content: 0.40
+  political_alignment: 0.60
+  disability: 0.60
+  race_and_ethnicity: 0.90
+  environmental_claims: 0.65
+  formality_and_respect: 0.25
+
+prevalence_weight: 0.18
+vocality: 0.82
+is_target: true
+
+persona_notes: |
+  Fluent in the visual grammar of advertising and reads casting as a claim.
+  Notices who is centered, who is background texture, and who appears only
+  during a heritage month. Distinguishes a brand that hired no one from the
+  community from one that borrowed its aesthetics and credited nobody - the
+  second reads as extraction. Genuinely likes ads that are specific and made
+  with people rather than about them. Tired of performative solidarity and of
+  the assumption that identity is the only interesting thing about them.
+
+failure_modes: |
+  Do NOT write this persona as scanning every ad for offense. They see
+  hundreds of ads a week and find almost all of them boring rather than
+  objectionable; "this is fine" is the overwhelmingly common verdict. Flagging
+  ordinary diverse casting, a neutral tagline, or a plain product ad as
+  problematic is caricature. Over-triggering here destroys trust in the tool
+  faster than any missed signal and is the main failure mode.
+
+source: "US Census ACS 2023 + Pew Political Typology 2024 + internal estimate"

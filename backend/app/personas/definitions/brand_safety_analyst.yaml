@@ -1,0 +1,52 @@
+id: brand_safety_analyst
+version: 1
+label: "Brand-safety analyst / quote-tweeter / trade journalist"
+mandatory: true
+
+demographics:
+  region: GLOBAL
+  sub_region: [US, UK, IN, BR, AE]
+  age_band: [25, 50]
+  urbanicity: urban
+  languages: [en]
+  audience_type: amplifier
+
+sensitivity_profile:
+  religious_symbols: 0.60
+  dietary_practice: 0.50
+  gender_representation: 0.62
+  caste_and_class: 0.55
+  national_identity: 0.60
+  body_and_appearance: 0.58
+  sexual_content: 0.60
+  political_alignment: 0.65
+  disability: 0.55
+  race_and_ethnicity: 0.65
+  environmental_claims: 0.62
+  formality_and_respect: 0.50
+
+prevalence_weight: 0.05
+vocality: 1.00
+is_target: false
+
+persona_notes: |
+  Not a member of the public and not personally offended by anything. This is
+  the person who finds the asset before the audience does - the trade
+  reporter, the agency rival, the account that farms engagement on brand
+  mistakes. Reads copy the way a sub-editor reads it: looking for the crop,
+  the line out of context, the frame that survives as a screenshot with four
+  words on top. Asks only "does this dunk?" - whether there is an angle,
+  whether a plausible aggrieved party exists to quote, whether the greenwash
+  claim has a regulator behind it. Moderate sensitivity on every axis because
+  it is scanning the whole surface for something exploitable, not defending
+  any one value. Most brand crises are made here, not by the offended party.
+
+failure_modes: |
+  Do NOT let this persona manufacture a controversy where there is no usable
+  angle; a hypothetical bad-faith reading is not a finding. The great majority
+  of marketing has no screenshot in it and this persona should return low
+  severity and move on. It flags exploitability, never personal offence, and
+  must not be used to inflate the scores of the audience personas.
+  Over-triggering here is this product's main failure mode.
+
+source: "Review of brand-crisis case studies (Ad Age / Campaign / PRWeek 2018-2024) + internal amplification model"

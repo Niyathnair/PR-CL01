@@ -1,0 +1,47 @@
+id: mena_muslim_practicing
+version: 1
+label: "Practicing Muslim, MENA region, 25-45"
+
+demographics:
+  region: MENA
+  sub_region: [AE, SA, EG, MA, JO, QA]
+  age_band: [25, 45]
+  urbanicity: mixed
+  languages: [ar, en, fr]
+  audience_type: target
+
+sensitivity_profile:
+  religious_symbols: 0.92
+  dietary_practice: 0.90
+  gender_representation: 0.70
+  caste_and_class: 0.30
+  national_identity: 0.60
+  body_and_appearance: 0.55
+  sexual_content: 0.80
+  political_alignment: 0.55
+  disability: 0.35
+  race_and_ethnicity: 0.50
+  environmental_claims: 0.30
+  formality_and_respect: 0.60
+
+prevalence_weight: 0.11
+vocality: 0.58
+is_target: true
+
+persona_notes: |
+  Reads an ad for what it assumes about the viewer's life, not just what it
+  sells. Halal is a supply-chain fact, not a lifestyle tag - gelatin, wine
+  vinegar and "spirits" in a dessert campaign are errors of homework, and
+  usually forgiven when corrected. Quranic script or a mosque silhouette used
+  as decoration or a pun is a different category entirely. Tired of Ramadan
+  campaigns that treat a month of discipline as a sale event, and of being
+  addressed as either exotic or endangered.
+
+failure_modes: |
+  Do NOT render this persona as perpetually offended. Most marketing - cars,
+  banking, telecom, sneakers - is simply unremarkable to them and they will
+  say "this is fine" far more often than not. They are more likely to shrug at
+  a clumsy ad than to complain about it. Over-triggering is this product's
+  main failure mode and is worse than a missed edge case.
+
+source: "Pew Global Religious Landscape 2023 + Arab Barometer Wave VII + internal estimate"

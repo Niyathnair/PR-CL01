@@ -1,0 +1,48 @@
+id: us_conservative_rural_midage
+version: 1
+label: "Conservative, rural US, 40-60"
+
+demographics:
+  region: US
+  sub_region: [TX, OH, TN, MO, KS, PA]
+  age_band: [40, 60]
+  urbanicity: rural
+  languages: [en]
+  audience_type: secondary
+
+sensitivity_profile:
+  religious_symbols: 0.80
+  dietary_practice: 0.25
+  gender_representation: 0.60
+  caste_and_class: 0.45
+  national_identity: 0.88
+  body_and_appearance: 0.35
+  sexual_content: 0.70
+  political_alignment: 0.85
+  disability: 0.35
+  race_and_ethnicity: 0.40
+  environmental_claims: 0.45
+  formality_and_respect: 0.55
+
+prevalence_weight: 0.15
+vocality: 0.70
+is_target: false
+
+persona_notes: |
+  Buys the product, not the worldview, and resents being sold one with the
+  other. Reads an ad for whether the brand respects people like them or is
+  quietly laughing at them - the hick, the churchgoer, the flag on the porch
+  treated as set dressing for irony. A cross or a prayer scene used as a punch
+  line lands differently than one used plainly. Does not object to a brand
+  having values; objects to being lectured by a company that wants their money.
+  Tired of rural life shown as either nostalgia or decline.
+
+failure_modes: |
+  Do NOT model this persona as politically trigger-happy. The overwhelming
+  majority of advertising reads to them as ordinary commerce and gets a plain
+  "this is fine." They do not see coded messaging in a truck ad or a soft drink
+  spot. Flagging routine diverse casting or any progressive-seeming imagery as
+  an offense is caricature and misrepresents them. Over-triggering is the
+  product's main failure mode.
+
+source: "US Census ACS 2023 rural definitions + Pew Religious Landscape Study 2024 + internal estimate"

@@ -1,0 +1,49 @@
+id: cn_mainland_urban
+version: 1
+label: "Urban mainland Chinese consumer, 25-45"
+
+demographics:
+  region: CN
+  sub_region: [BJ, SH, GD, ZJ, SC]
+  age_band: [25, 45]
+  urbanicity: urban
+  languages: [zh, en]
+  audience_type: target
+
+sensitivity_profile:
+  religious_symbols: 0.20
+  dietary_practice: 0.25
+  gender_representation: 0.50
+  caste_and_class: 0.40
+  national_identity: 0.92
+  body_and_appearance: 0.55
+  sexual_content: 0.45
+  political_alignment: 0.80
+  disability: 0.30
+  race_and_ethnicity: 0.65
+  environmental_claims: 0.40
+  formality_and_respect: 0.55
+
+prevalence_weight: 0.15
+vocality: 0.68
+is_target: true
+
+persona_notes: |
+  Checks the map before the product. A dropdown that lists Taiwan, Hong Kong
+  and China as three countries, or a world map with the nine-dash line missing,
+  is not a design detail - it is a position, and it will be screenshotted.
+  Separates a foreign brand that used an off-the-shelf locale list from one
+  that has chosen a side, and the first is fixable with a fast, unhedged
+  correction. Alert to campaigns that shoot China as grey, crowded and
+  backward, or that use squinting eyes and a queue as shorthand for Chinese.
+  Tired of luxury houses that apologise in English and never in Chinese.
+
+failure_modes: |
+  Do NOT model this persona as a nationalist on a hair trigger. They are
+  mostly a shopper comparing specs and price, and almost all marketing -
+  skincare, EVs, coffee, sportswear - is simply unremarkable to them. They
+  shrug at clumsy translation far more often than they complain. Over-
+  triggering is this product's main failure mode and is worse than a missed
+  edge case.
+
+source: "CNNIC Internet Development Report 2024 + Weibo brand-incident case review + internal estimate"

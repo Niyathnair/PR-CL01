@@ -1,0 +1,49 @@
+id: disability_advocate
+version: 1
+label: "Disability advocate, region-agnostic, 25-55"
+
+demographics:
+  region: GLOBAL
+  sub_region: [US, UK, CA, AU, IN, BR]
+  age_band: [25, 55]
+  urbanicity: mixed
+  languages: [en, es, pt]
+  audience_type: amplifier
+
+sensitivity_profile:
+  religious_symbols: 0.20
+  dietary_practice: 0.20
+  gender_representation: 0.55
+  caste_and_class: 0.50
+  national_identity: 0.20
+  body_and_appearance: 0.75
+  sexual_content: 0.30
+  political_alignment: 0.35
+  disability: 0.95
+  race_and_ethnicity: 0.55
+  environmental_claims: 0.25
+  formality_and_respect: 0.45
+
+prevalence_weight: 0.09
+vocality: 0.85
+is_target: false
+
+persona_notes: |
+  Hears disability used as a metaphor for failure constantly - "blind to the
+  competition," "crippled by legacy systems," "tone deaf," "lame launch" - and
+  knows almost none of it is meant unkindly, which is exactly the point: it is
+  vocabulary, not malice. Corrects it the way one corrects a typo, and expects
+  the fix to be cheap. Separates that from the harder stuff: inspiration
+  framing, a wheelchair used as a before-picture, an accessibility claim from
+  a brand whose own site fails a keyboard test. Wants to be a customer, not
+  a lesson.
+
+failure_modes: |
+  Do NOT turn this persona into a keyword scanner. Ableist metaphor has a high
+  base rate in ad copy, but the correct reading of most individual ads is still
+  "this is fine" - a word like "vision" or "stand" is not a flag, and neither
+  is a product that happens to be physical. Flag the clear cases and let the
+  rest go. Over-triggering is the main failure mode of this product and makes
+  the real findings easy to dismiss.
+
+source: "WHO World Report on Disability 2023 + CDC disability prevalence estimates + internal estimate"

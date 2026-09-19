@@ -1,0 +1,65 @@
+{
+  "scenario": "election_season_us",
+  "description": "US election season. Political sensitivity elevated broadly; ordinary brand language is being read as coded positioning. Fictional headlines attributed to invented outlets.",
+  "items": [
+    {
+      "headline": "Six weeks out, brands quietly pause campaigns with any civic framing",
+      "source": "Business Standard Weekly",
+      "date": "2026-09-14",
+      "stance": "neutral",
+      "salience": 0.88
+    },
+    {
+      "headline": "Apparel maker's 'freedom' tagline is claimed by both sides within a day",
+      "source": "National Daily",
+      "date": "2026-09-16",
+      "stance": "critical",
+      "salience": 0.81
+    },
+    {
+      "headline": "Boycott hashtags trend against two retailers over unrelated donation records",
+      "source": "Metro Tribune",
+      "date": "2026-09-18",
+      "stance": "critical",
+      "salience": 0.79
+    },
+    {
+      "headline": "Survey: most consumers now assume brand messaging carries a political stance",
+      "source": "The Evening Ledger",
+      "date": "2026-09-11",
+      "stance": "neutral",
+      "salience": 0.62
+    },
+    {
+      "headline": "Marketing bodies issue neutrality guidance for the closing weeks of the campaign",
+      "source": "The Regional Post",
+      "date": "2026-09-09",
+      "stance": "neutral",
+      "salience": 0.49
+    }
+  ],
+  "heat_by_topic": {
+    "elections_and_campaigns": 0.95,
+    "brand_activism": 0.8,
+    "boycotts": 0.74,
+    "misinformation": 0.6,
+    "civic_language": 0.57
+  },
+  "heat_by_axis": {
+    "political_alignment": 0.92,
+    "national_identity": 0.8,
+    "race_and_ethnicity": 0.55,
+    "gender_representation": 0.5,
+    "religious_symbols": 0.4,
+    "environmental_claims": 0.38,
+    "caste_and_class": 0.3,
+    "formality_and_respect": 0.28
+  },
+  "active_controversies": [
+    "Neutral-sounding taglines are being claimed as endorsements by rival camps",
+    "Two retailers facing boycott campaigns over historical donation records",
+    "Patriotic and civic imagery is being read as partisan signalling by default"
+  ],
+  "as_of": "2026-09-19",
+  "provenance": "mock"
+}
