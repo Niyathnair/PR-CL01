@@ -7,7 +7,11 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.api.ingest_routes import router as ingest_router
 from app.api.routes import router
+from app.config import settings
+from app.corpus.store import CorpusStore
+from app.ingest.sync import IngestPipeline, SyncScheduler
 from app.llm.auth import MissingCredentialsError, describe_credential, resolve_credential
 from app.llm.client import LLMClient
 from app.personas.registry import get_registry
@@ -44,7 +48,18 @@ async def lifespan(app: FastAPI):
     app.state.store = RunStore()
     app.state.runs = RunStore()
 
+    # Ingest pipeline + scheduler. Apify is optional; without a token the
+    # pipeline runs on GDELT and RSS alone.
+    app.state.scheduler = SyncScheduler(
+        IngestPipeline(store=CorpusStore(), apify_token=settings.apify_token),
+        interval_hours=settings.sync_interval_hours,
+    )
+    if settings.sync_on_startup:
+        app.state.scheduler.start()
+
     yield
+
+    await app.state.scheduler.stop()
 
     # Shutdown must not fail on a client that has no aclose (e.g. a test double).
     closer = getattr(app.state.llm, "aclose", None)
@@ -66,6 +81,7 @@ app = FastAPI(
 )
 
 app.include_router(router, prefix="/v1")
+app.include_router(ingest_router, prefix="/v1")
 
 
 @app.get("/")

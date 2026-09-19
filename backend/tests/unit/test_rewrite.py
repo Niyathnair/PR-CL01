@@ -50,8 +50,7 @@ class RewriteStub(StubLLM):
                     {
                         "kind": "preserve_edge",
                         "text": (
-                            "Our new protein bar - finally, one that "
-                            "doesn't taste like cardboard."
+                            "Our new protein bar - finally, one that doesn't taste like cardboard."
                         ),
                         "rationale": "Kept the joke, changed its target.",
                         "preserved": "The comedic structure.",

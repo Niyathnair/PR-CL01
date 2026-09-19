@@ -54,6 +54,16 @@ class Settings(BaseSettings):
     ci_lower_quantile: float = 0.10
     ci_upper_quantile: float = 0.90
 
+    # --- ingest (§5.5) ---
+    # Apify is optional: it supplies social reaction volume via managed actors,
+    # so no personal account or session cookie is ever involved. Without a token
+    # the pipeline runs on GDELT + RSS, which are free and need no auth.
+    apify_token: str = ""
+    apify_actor: str = "apidojo~tweet-scraper"
+    sync_interval_hours: float = 6.0
+    sync_on_startup: bool = False
+    sync_window_days: int = 7
+
     # --- clustering (§11.1) ---
     cluster_distance_threshold: float = 0.35
 
