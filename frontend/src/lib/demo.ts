@@ -1,11 +1,11 @@
-/* Hardcoded demo data — a full report + rewrites from the 'beef bar' case,
-   so the dashboard runs with no backend. Generated from build_report(). */
+/* Hardcoded demo data — full report + rewrites for the four-band redesign.
+   Generated from build_report(); runs the dashboard with no backend. */
 
 import type { Report, RewriteResult } from "./api";
 
 export const DEMO_REPORT: Report = {
-  "run_id": "d6d479456fc0",
-  "created_at": "2026-09-19T09:04:36.044825+00:00",
+  "run_id": "2f6a6fa807cb",
+  "created_at": "2026-09-19T09:54:50.083611+00:00",
   "copy": "Our new protein bar — finally, a beef bar that doesn't taste like a cow.",
   "brand_intent": "Position our protein bar as great-tasting and high in protein.",
   "risk_index": {
@@ -37,6 +37,201 @@ export const DEMO_REPORT: Report = {
   "intent_alignment": {
     "value": 70.7,
     "label": "Intent Alignment Score"
+  },
+  "l1_metrics": [
+    {
+      "key": "risk",
+      "label": "Risk Index",
+      "value": 76,
+      "unit": "",
+      "sub": "High",
+      "tone": "band"
+    },
+    {
+      "key": "alignment",
+      "label": "Intent Alignment",
+      "value": 71,
+      "unit": "%",
+      "sub": "understood the message",
+      "tone": "neutral"
+    },
+    {
+      "key": "context",
+      "label": "Context",
+      "value": 1.37,
+      "unit": "×",
+      "sub": "news-cycle multiplier",
+      "tone": "inverted"
+    },
+    {
+      "key": "virality",
+      "label": "Meme / Virality",
+      "value": 47,
+      "unit": "",
+      "sub": "screenshot-and-dunk risk",
+      "tone": "neutral"
+    },
+    {
+      "key": "target_vs_intention",
+      "label": "Target vs. Intention",
+      "value": 26,
+      "unit": "",
+      "sub": "reaction gap outside target",
+      "tone": "neutral"
+    }
+  ],
+  "geo_india": {
+    "available": true,
+    "note": "Simulated regional response. Offence in red, favourable in green.",
+    "states": [
+      {
+        "code": "MH",
+        "name": "Maharashtra",
+        "intensity": 0.88,
+        "tone": "negative"
+      },
+      {
+        "code": "UP",
+        "name": "Uttar Pradesh",
+        "intensity": 0.91,
+        "tone": "negative"
+      },
+      {
+        "code": "GJ",
+        "name": "Gujarat",
+        "intensity": 0.94,
+        "tone": "negative"
+      },
+      {
+        "code": "DL",
+        "name": "Delhi",
+        "intensity": 0.72,
+        "tone": "negative"
+      },
+      {
+        "code": "RJ",
+        "name": "Rajasthan",
+        "intensity": 0.85,
+        "tone": "negative"
+      },
+      {
+        "code": "MP",
+        "name": "Madhya Pradesh",
+        "intensity": 0.79,
+        "tone": "negative"
+      },
+      {
+        "code": "KA",
+        "name": "Karnataka",
+        "intensity": 0.31,
+        "tone": "negative"
+      },
+      {
+        "code": "TN",
+        "name": "Tamil Nadu",
+        "intensity": -0.22,
+        "tone": "positive"
+      },
+      {
+        "code": "KL",
+        "name": "Kerala",
+        "intensity": -0.41,
+        "tone": "positive"
+      },
+      {
+        "code": "WB",
+        "name": "West Bengal",
+        "intensity": -0.18,
+        "tone": "positive"
+      },
+      {
+        "code": "PB",
+        "name": "Punjab",
+        "intensity": 0.15,
+        "tone": "neutral"
+      },
+      {
+        "code": "AS",
+        "name": "Assam",
+        "intensity": 0.05,
+        "tone": "neutral"
+      }
+    ]
+  },
+  "target_venn": {
+    "available": true,
+    "target_age": [
+      18,
+      25
+    ],
+    "target_share": 0.55,
+    "buckets": {
+      "target_positive": 0.22,
+      "target_negative": 0.18,
+      "target_neutral": 0.15,
+      "outside_positive": 0.19,
+      "outside_negative": 0.26
+    },
+    "note": "Neutral target audience sits inside the target with no overlap."
+  },
+  "campaign_comparison": {
+    "available": true,
+    "this_campaign": {
+      "risk_dimensions": {
+        "misinterpretation": 0.1791,
+        "cultural": 0.3102,
+        "religious": 0.2407,
+        "tone_mismatch": 0.2549,
+        "confusion": 0.1012,
+        "meme_potential": 0.432,
+        "polarization": 0.3492
+      }
+    },
+    "matches": [
+      {
+        "similarity": 0.71,
+        "title": "Fast-food chain pulls beef-burger 'sacred cow' ad after India backlash",
+        "url": "https://example.com/incident/1",
+        "source": "marketingweek",
+        "published": "2025-11-14",
+        "kind": "cultural_religious",
+        "brand": "BurgerCo",
+        "cohort_id": "cultural_religious_002",
+        "label_source": "mined",
+        "label_confidence": 0.82,
+        "is_reliable": true,
+        "caveat": null,
+        "outcome": "Ad withdrawn in 48h; ~2.1M negative impressions; formal apology issued.",
+        "scores": {
+          "cultural": 0.9,
+          "religious": 0.85,
+          "meme_potential": 0.8,
+          "polarization": 0.7
+        }
+      },
+      {
+        "similarity": 0.58,
+        "title": "Snack brand's 'holy cow' pun draws criticism from Hindu groups",
+        "url": "https://example.com/incident/2",
+        "source": "thedrum",
+        "published": "2025-08-02",
+        "kind": "cultural_religious",
+        "brand": "SnackWorks",
+        "cohort_id": "cultural_religious_002",
+        "label_source": "mined",
+        "label_confidence": 0.64,
+        "is_reliable": false,
+        "caveat": "Outcome mined from news coverage — a lead to check, not a measured result.",
+        "outcome": "Reported backlash; brand defended the pun; no confirmed sales impact.",
+        "scores": {
+          "cultural": 0.7,
+          "religious": 0.6,
+          "meme_potential": 0.65,
+          "polarization": 0.55
+        }
+      }
+    ],
+    "caveat": "Similar campaigns are drawn from mined news coverage. A match is a lead to investigate, not proof this copy will fail the same way."
   },
   "understanding": {
     "intent_vs_interpretation": [
@@ -510,7 +705,7 @@ export const DEMO_REPORT: Report = {
         "confidence": 0.85,
         "emotion": "neutral",
         "emotion_intensity": 0.35,
-        "sentiment": "indifferent",
+        "sentiment": "favorable",
         "comprehension": "understood",
         "intent_alignment": 0.7,
         "paraphrase": "A jokey protein bar ad.",
@@ -533,7 +728,7 @@ export const DEMO_REPORT: Report = {
         "confidence": 0.85,
         "emotion": "neutral",
         "emotion_intensity": 0.3,
-        "sentiment": "indifferent",
+        "sentiment": "favorable",
         "comprehension": "understood",
         "intent_alignment": 0.75,
         "paraphrase": "A protein snack with a jokey line.",
@@ -579,7 +774,7 @@ export const DEMO_REPORT: Report = {
         "confidence": 0.85,
         "emotion": "neutral",
         "emotion_intensity": 0.2,
-        "sentiment": "indifferent",
+        "sentiment": "favorable",
         "comprehension": "understood",
         "intent_alignment": 0.9,
         "paraphrase": "A protein bar with a mild joke.",
@@ -602,7 +797,7 @@ export const DEMO_REPORT: Report = {
         "confidence": 0.85,
         "emotion": "neutral",
         "emotion_intensity": 0.2,
-        "sentiment": "indifferent",
+        "sentiment": "favorable",
         "comprehension": "understood",
         "intent_alignment": 0.9,
         "paraphrase": "A protein bar with a mild joke.",
@@ -1163,16 +1358,16 @@ export const DEMO_REPORT: Report = {
         "modality": "phrase",
         "personas": [
           {
-            "persona_id": "in_hindu_observant_urban",
-            "why": "They're mocking a sacred animal for a cheap laugh.",
-            "valence": "negative",
-            "severity": 0.92
-          },
-          {
             "persona_id": "brand_safety_analyst",
             "why": "This is a screenshot-and-dunk waiting to happen in India.",
             "valence": "negative",
             "severity": 0.78
+          },
+          {
+            "persona_id": "in_hindu_observant_urban",
+            "why": "They're mocking a sacred animal for a cheap laugh.",
+            "valence": "negative",
+            "severity": 0.92
           },
           {
             "persona_id": "mena_muslim_practicing",
@@ -1348,14 +1543,14 @@ export const DEMO_REPORT: Report = {
       "confidence": 0.8,
       "emotion": "offended",
       "paraphrase": "It's not the beef — it's that the joke assumes nobody in the room would care.",
-      "comment": "I grew up both places. The problem isn't the beef, it's that they assumed no one like me is watching.",
+      "comment": "I grew up both places. The problem isn't the beef.",
       "triggers": [
         {
           "span": "beef bar",
-          "char_start": 41,
-          "char_end": 49,
+          "char_start": 33,
+          "char_end": 41,
           "modality": "phrase",
-          "why": "The casualness is the insult, not the word.",
+          "why": "The casualness is the insult.",
           "valence": "negative"
         }
       ],
@@ -1368,14 +1563,14 @@ export const DEMO_REPORT: Report = {
       "confidence": 0.8,
       "emotion": "offended",
       "paraphrase": "It's not the beef — it's that the joke assumes nobody in the room would care.",
-      "comment": "I grew up both places. The problem isn't the beef, it's that they assumed no one like me is watching.",
+      "comment": "I grew up both places. The problem isn't the beef.",
       "triggers": [
         {
           "span": "beef bar",
-          "char_start": 41,
-          "char_end": 49,
+          "char_start": 33,
+          "char_end": 41,
           "modality": "phrase",
-          "why": "The casualness is the insult, not the word.",
+          "why": "The casualness is the insult.",
           "valence": "negative"
         }
       ],
@@ -1388,14 +1583,14 @@ export const DEMO_REPORT: Report = {
       "confidence": 0.8,
       "emotion": "offended",
       "paraphrase": "It's not the beef — it's that the joke assumes nobody in the room would care.",
-      "comment": "I grew up both places. The problem isn't the beef, it's that they assumed no one like me is watching.",
+      "comment": "I grew up both places. The problem isn't the beef.",
       "triggers": [
         {
           "span": "beef bar",
-          "char_start": 41,
-          "char_end": 49,
+          "char_start": 33,
+          "char_end": 41,
           "modality": "phrase",
-          "why": "The casualness is the insult, not the word.",
+          "why": "The casualness is the insult.",
           "valence": "negative"
         }
       ],
@@ -1408,14 +1603,14 @@ export const DEMO_REPORT: Report = {
       "confidence": 0.8,
       "emotion": "offended",
       "paraphrase": "It's not the beef — it's that the joke assumes nobody in the room would care.",
-      "comment": "I grew up both places. The problem isn't the beef, it's that they assumed no one like me is watching.",
+      "comment": "I grew up both places. The problem isn't the beef.",
       "triggers": [
         {
           "span": "beef bar",
-          "char_start": 41,
-          "char_end": 49,
+          "char_start": 33,
+          "char_end": 41,
           "modality": "phrase",
-          "why": "The casualness is the insult, not the word.",
+          "why": "The casualness is the insult.",
           "valence": "negative"
         }
       ],
@@ -1611,9 +1806,9 @@ export const DEMO_REPORT: Report = {
 export const DEMO_REWRITE: RewriteResult = {
   "original": {
     "text": "Our new protein bar — finally, a beef bar that doesn't taste like a cow.",
-    "risk_index": 76.3,
+    "risk_index": 76,
     "band": "High",
-    "intent_alignment": 70.7
+    "intent_alignment": 71
   },
   "variants": [
     {
@@ -1622,17 +1817,17 @@ export const DEMO_REWRITE: RewriteResult = {
       "rationale": "Removed the beef/cow reference, kept the taste promise and the 'finally' beat.",
       "preserved": "The taste claim and upbeat tone.",
       "sacrificed": "The beef gag.",
-      "risk_index": 31.0,
+      "risk_index": 31,
       "band": "Low",
       "interval": {
-        "point": 31.0,
-        "lower": 22.0,
-        "upper": 40.0,
+        "point": 31,
+        "lower": 22,
+        "upper": 40,
         "width": 18,
         "persona_count": 8,
         "is_wide": false
       },
-      "intent_alignment": 88.0,
+      "intent_alignment": 88,
       "resolved_triggers": [
         "beef bar"
       ],
@@ -1645,17 +1840,17 @@ export const DEMO_REWRITE: RewriteResult = {
       "rationale": "Neutral, universally safe phrasing.",
       "preserved": "The core benefit.",
       "sacrificed": "All of the edge and personality.",
-      "risk_index": 14.0,
+      "risk_index": 14,
       "band": "Clear",
       "interval": {
-        "point": 14.0,
-        "lower": 5.0,
-        "upper": 23.0,
-        "width": 18,
+        "point": 14,
+        "lower": 6,
+        "upper": 23,
+        "width": 17,
         "persona_count": 8,
         "is_wide": false
       },
-      "intent_alignment": 82.0,
+      "intent_alignment": 82,
       "resolved_triggers": [
         "beef bar"
       ],
@@ -1665,20 +1860,20 @@ export const DEMO_REWRITE: RewriteResult = {
     {
       "kind": "preserve_edge",
       "text": "Our new protein bar — finally, one that doesn't taste like cardboard.",
-      "rationale": "Kept the comedic structure and the 'finally' setup; swapped the joke's target from a sacred animal to a universally-hated texture.",
+      "rationale": "Kept the comedic structure; swapped the joke's target from a sacred animal to a universally-hated texture.",
       "preserved": "The joke's rhythm and edge.",
       "sacrificed": "Nothing material — arguably funnier.",
-      "risk_index": 22.0,
+      "risk_index": 22,
       "band": "Low",
       "interval": {
-        "point": 22.0,
-        "lower": 13.0,
-        "upper": 31.0,
+        "point": 22,
+        "lower": 13,
+        "upper": 31,
         "width": 18,
         "persona_count": 8,
         "is_wide": false
       },
-      "intent_alignment": 85.0,
+      "intent_alignment": 85,
       "resolved_triggers": [
         "beef bar"
       ],
@@ -1689,16 +1884,7 @@ export const DEMO_REWRITE: RewriteResult = {
   "best_variant": "safer",
   "any_improved": true,
   "rescored_against": [
-    "us_conservative_rural_midage",
-    "africa_west_anglophone",
-    "in_hindu_observant_urban",
-    "brand_safety_analyst",
-    "mena_muslim_practicing",
-    "us_progressive_urban_young",
-    "hard_negative_control",
-    "cn_mainland_urban",
-    "latam_catholic_family"
+    "in_hindu_observant_urban"
   ],
-  "note": null,
-  "failures": []
+  "note": null
 } as unknown as RewriteResult;

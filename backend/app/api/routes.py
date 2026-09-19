@@ -43,6 +43,12 @@ class SimulateRequest(BaseModel):
         ),
     )
     context_scenario: str = Field(default="quiet", description="Context fixture to simulate under")
+    target_age_min: int | None = Field(
+        default=None, ge=0, le=120, description="Target audience min age"
+    )
+    target_age_max: int | None = Field(
+        default=None, ge=0, le=120, description="Target audience max age"
+    )
     k: int | None = Field(default=None, ge=2, le=40, description="Persona count override")
     enable_composites: bool = Field(
         default=True, description="Run Tier-2 blind-spot discovery (never affects the score)"
@@ -95,6 +101,11 @@ async def simulate(req: SimulateRequest, request: Request) -> SimulateResponse:
             context_scenario=req.context_scenario,
             k=req.k,
             enable_composites=req.enable_composites,
+            target_age=(
+                (req.target_age_min, req.target_age_max)
+                if req.target_age_min is not None and req.target_age_max is not None
+                else None
+            ),
         )
     except Exception as exc:
         logger.exception("Simulation failed")
@@ -157,6 +168,10 @@ async def get_run(run_id: str, request: Request) -> dict[str, Any]:
 
 # Panel name -> path into the report. Lets a client pull one analysis cheaply.
 _PANEL_PATHS: dict[str, tuple[str, ...]] = {
+    "l1_metrics": ("l1_metrics",),
+    "geo_india": ("geo_india",),
+    "target_venn": ("target_venn",),
+    "campaign_comparison": ("campaign_comparison",),
     "risk_index": ("risk_index",),
     "intent_alignment": ("intent_alignment",),
     "intent_vs_interpretation": ("understanding", "intent_vs_interpretation"),

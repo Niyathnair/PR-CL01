@@ -16,6 +16,7 @@ from typing import Any
 
 from app.analysis import projections
 from app.analysis.graph import build_pathway, interpretation_clusters
+from app.analysis.redesign import india_geo, l1_metrics, target_venn
 from app.composition.compose import build_composites, run_composite
 from app.context.provider import ContextBundle, get_context_provider
 from app.llm.client import LLMClient
@@ -39,6 +40,7 @@ class RunResult:
     run_id: str
     copy: str
     brand_intent: str | None
+    target_age: tuple[int, int] | None
     created_at: str
 
     reactions: list[ReactionObject]
@@ -144,6 +146,7 @@ async def execute_run(
     context_scenario: str = "quiet",
     k: int | None = None,
     enable_composites: bool = True,
+    target_age: tuple[int, int] | None = None,
 ) -> RunResult:
     """Full simulation run."""
     run_id = uuid.uuid4().hex[:12]
@@ -200,6 +203,7 @@ async def execute_run(
         run_id=run_id,
         copy=copy,
         brand_intent=brand_intent,
+        target_age=target_age,
         created_at=datetime.now(UTC).isoformat(),
         reactions=reactions,
         composites=composites,
@@ -219,6 +223,14 @@ def build_report(result: RunResult, registry: dict[str, PersonaNode]) -> dict[st
     score = compute_score(scored, kappa)
     interval = compute_interval(scored, kappa, seed=42)
     canary = control_canary(result.reactions, registry)
+    ias = intent_alignment_score(scored)
+
+    # Redesign panels (§ four-band layout).
+    tvu = projections.target_vs_unintended(scored, registry)
+    l1 = l1_metrics(scored, score.index, score.band, ias, kappa, tvu)
+    geo = india_geo(scored, registry)
+    venn = target_venn(scored, registry, result.target_age)
+    comparison = _campaign_comparison(result, registry)
 
     return {
         "run_id": result.run_id,
@@ -241,9 +253,15 @@ def build_report(result: RunResult, registry: dict[str, PersonaNode]) -> dict[st
             ),
         },
         "intent_alignment": {
-            "value": intent_alignment_score(scored),
+            "value": ias,
             "label": "Intent Alignment Score",
         },
+        # ── L1 headline metrics (five across the top) ──────────────
+        "l1_metrics": l1,
+        # ── redesign panels ───────────────────────────────────────
+        "geo_india": geo,
+        "target_venn": venn,
+        "campaign_comparison": comparison,
         # ── the eight questions ───────────────────────────────────
         "understanding": {
             "intent_vs_interpretation": _intent_vs_interpretation(scored, registry),
@@ -338,3 +356,36 @@ def _who_might_misunderstand(
             }
         )
     return sorted(rows, key=lambda r: r["gap"], reverse=True)
+
+
+def _campaign_comparison(result: RunResult, registry: dict[str, PersonaNode]) -> dict[str, Any]:
+    """Comparison with previous similar campaigns from the failure corpus.
+
+    Pulls the two most similar historical incidents and scores this run against
+    them on shared dimensions. Every match carries its reliability caveat, since
+    corpus outcomes are mined news narrative, not measured results.
+    """
+    try:
+        from app.corpus.store import CorpusStore, find_similar
+
+        incidents = CorpusStore().load()
+        matches = find_similar(
+            incidents,
+            result.copy,
+            activated_axes=result.selection.triage.activated_axes,
+            limit=2,
+        )
+    except Exception:  # noqa: BLE001 - comparison is best-effort
+        matches = []
+
+    return {
+        "available": bool(matches),
+        "this_campaign": {
+            "risk_dimensions": projections.risk_anatomy(result.scored),
+        },
+        "matches": matches,
+        "caveat": (
+            "Similar campaigns are drawn from mined news coverage. A match is a "
+            "lead to investigate, not proof this copy will fail the same way."
+        ),
+    }

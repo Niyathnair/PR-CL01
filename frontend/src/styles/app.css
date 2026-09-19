@@ -339,3 +339,103 @@
 .tiny { font-size: 12px; }
 .big-num { font-size: 40px; font-weight: 300; letter-spacing: -0.02em; }
 .big-num sup { font-size: 18px; color: var(--text-secondary); font-weight: 400; }
+
+/* ══════════════════════════════════════════════════════════════════
+   REDESIGN — four-band full-screen dashboard
+   ══════════════════════════════════════════════════════════════════ */
+
+.main--full { max-width: none; width: 100%; }
+.dash { display: flex; flex-direction: column; gap: 20px; }
+
+.band-title { font-size: 22px; font-weight: 300; letter-spacing: -0.02em; margin: 8px 0 -4px; }
+
+/* ── Band 1: L1 strip (5 across) ── */
+.l1strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.l1 {
+  background: var(--surface); border-radius: var(--radius-card);
+  padding: 20px 24px; box-shadow: var(--shadow-card);
+}
+.l1--inverted { background: var(--ink); color: #fff; }
+.l1__label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+.l1--inverted .l1__label { color: rgba(255,255,255,.6); }
+.l1__value { font-size: 46px; font-weight: 300; line-height: 1.1; letter-spacing: -0.03em; margin: 6px 0; }
+.l1__unit { font-size: 22px; color: var(--text-secondary); margin-left: 2px; }
+.l1--inverted .l1__unit { color: rgba(255,255,255,.6); }
+.l1__sub { font-size: 12px; color: var(--text-tertiary); }
+@media (max-width: 1100px) { .l1strip { grid-template-columns: repeat(3, 1fr); } }
+
+/* ── Bands: two-column splits ── */
+.band { display: grid; gap: 16px; }
+.band--2 { grid-template-columns: 1fr 1fr; align-items: stretch; }
+.band--4 { grid-template-columns: repeat(4, 1fr); }
+.col { display: flex; flex-direction: column; }
+.col--stack { display: flex; flex-direction: column; gap: 16px; }
+.col--stack > * { flex: 1; }
+.col > .card { flex: 1; }
+@media (max-width: 1200px) { .band--4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 900px) { .band--2, .band--4 { grid-template-columns: 1fr; } }
+
+.compose-wrap { max-width: 900px; }
+
+/* ── Feel bar chart ── */
+.feelbars { display: flex; align-items: flex-end; gap: 8px; height: 180px; padding-top: 12px; }
+.feelbar { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+.feelbar__col { width: 70%; border-radius: 8px 8px 0 0; min-height: 4px; transition: height var(--dur-md) var(--ease); }
+.feelbar__pct { font-size: 13px; font-weight: 500; margin-top: 6px; }
+.feelbar__lbl { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+.split-note { margin-top: 12px; padding: 8px 12px; background: var(--lime-pale); color: var(--ink); border-radius: var(--radius-input); font-size: 13px; }
+
+/* ── Comment word-cloud ── */
+.cloud { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; line-height: 1.4; padding: 8px 0; }
+.cloud__word { font-weight: 400; }
+
+/* ── Campaign highlight ── */
+.hl-copy { font-size: 22px; line-height: 1.7; font-weight: 300; }
+.hl-red {
+  position: relative; background: rgba(217,54,54,.12);
+  border: 1.5px solid var(--band-severe); border-radius: 6px;
+  padding: 0 4px; cursor: help; color: var(--band-severe);
+}
+.hl-pop {
+  visibility: hidden; opacity: 0; position: absolute; z-index: 20;
+  left: 0; top: 100%; margin-top: 8px; width: 280px;
+  background: var(--surface-raised); color: var(--text-primary);
+  border-radius: var(--radius-inner); padding: 14px; box-shadow: var(--shadow-overlay);
+  font-size: 13px; font-weight: 400; line-height: 1.5;
+  transition: opacity var(--dur-sm) var(--ease);
+}
+.hl-red:hover .hl-pop, .hl-red:focus .hl-pop { visibility: visible; opacity: 1; }
+.hl-pop strong { color: var(--band-severe); }
+
+/* ── Persona faces ── */
+.faces { display: flex; gap: 16px; justify-content: space-around; }
+.face { text-align: center; position: relative; cursor: help; flex: 1; }
+.face__top { height: 18px; }
+.face__feel { font-size: 12px; font-weight: 600; }
+.face__emoji {
+  width: 64px; height: 64px; border-radius: 50%; margin: 6px auto;
+  display: grid; place-items: center; font-size: 30px;
+  box-shadow: var(--shadow-card);
+}
+.face__demo { font-size: 11px; color: var(--text-secondary); max-width: 100px; margin: 0 auto; }
+.face__pop {
+  visibility: hidden; opacity: 0; position: absolute; z-index: 20;
+  left: 50%; transform: translateX(-50%); top: 100%; margin-top: 8px; width: 240px;
+  background: var(--surface-raised); border-radius: var(--radius-inner);
+  padding: 14px; box-shadow: var(--shadow-overlay); font-size: 13px; text-align: left;
+  transition: opacity var(--dur-sm) var(--ease);
+}
+.face:hover .face__pop, .face:focus .face__pop { visibility: visible; opacity: 1; }
+
+/* ── India map ── */
+.india-map { width: 100%; max-height: 240px; display: block; }
+
+/* ── Venn ── */
+.venn { width: 100%; max-height: 160px; display: block; margin-bottom: 8px; }
+
+/* ── Comparison ── */
+.cmp { background: var(--surface-raised); border-radius: var(--radius-inner); padding: 12px; box-shadow: var(--shadow-card); }
+.cmp:focus { outline: 2px solid var(--ink); }
+.cmp-bars { display: flex; gap: 4px; height: 40px; align-items: flex-end; margin-top: 8px; }
+.cmp-bar { flex: 1; height: 100%; display: flex; align-items: flex-end; background: var(--surface); border-radius: 4px; overflow: hidden; }
+.cmp-bar > div { width: 100%; border-radius: 4px 4px 0 0; }

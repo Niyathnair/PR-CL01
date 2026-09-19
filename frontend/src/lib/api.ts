@@ -66,6 +66,41 @@ export interface Report {
   brand_intent: string | null;
   risk_index: RiskIndex;
   intent_alignment: { value: number; label: string };
+  l1_metrics: L1Metric[];
+  geo_india: {
+    available: boolean;
+    note: string;
+    states: Array<{ code: string; name: string; intensity: number; tone: "negative" | "positive" | "neutral" }>;
+  };
+  target_venn: {
+    available: boolean;
+    reason?: string;
+    target_age?: [number, number];
+    target_share?: number;
+    buckets?: Record<string, number>;
+    note?: string;
+  };
+  campaign_comparison: {
+    available: boolean;
+    this_campaign: { risk_dimensions: Record<string, number> };
+    matches: Array<{
+      similarity: number;
+      title: string;
+      url: string;
+      source: string;
+      published: string;
+      kind: string;
+      brand: string | null;
+      cohort_id: string | null;
+      label_source: string;
+      label_confidence: number;
+      is_reliable: boolean;
+      caveat: string | null;
+      outcome?: string;
+      scores?: Record<string, number>;
+    }>;
+    caveat: string;
+  };
   understanding: {
     intent_vs_interpretation: Array<{
       persona_id: string;
@@ -166,11 +201,22 @@ export interface Report {
   usage: { calls: number; estimated_cost_usd: number; by_model?: Record<string, number> };
 }
 
+export interface L1Metric {
+  key: string;
+  label: string;
+  value: number;
+  unit: string;
+  sub: string;
+  tone: "band" | "neutral" | "inverted";
+}
+
 export interface SimulateRequest {
   copy: string;
   brand_intent?: string;
   context_scenario?: string;
   enable_composites?: boolean;
+  target_age_min?: number;
+  target_age_max?: number;
 }
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {

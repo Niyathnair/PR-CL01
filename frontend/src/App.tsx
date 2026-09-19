@@ -1,42 +1,33 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { api, type Report, type RewriteResult } from "./lib/api";
 import { DEMO_REPORT, DEMO_REWRITE } from "./lib/demo";
-import { Card, IconButton, ScoreGauge, Chip, Empty, Meter } from "./components/ui";
+import { Card, IconButton, Empty } from "./components/ui";
+import { Rewrites } from "./panels/special";
 import {
-  IntentVsInterpretation,
-  WhatTheyThink,
-  EmotionalResponse,
-  PersonaReactions,
-  SimulatedComments,
-  RiskAnatomy,
-  SeverityLikelihood,
-  ControversialVsMisunderstood,
-  WhoMightMisunderstand,
-  RegionHeatmap,
-  TargetVsUnintended,
-  MemePotential,
-} from "./panels/panels";
-import { TriggerView, BacklashPathway, BlindSpots, Rewrites } from "./panels/special";
+  L1Strip,
+  FeelChart,
+  CommentCloud,
+  CampaignHighlight,
+  PersonaBoards,
+  IndiaHeatmap,
+  TargetVenn,
+  CampaignComparison,
+  RiskAnatomyRadar,
+} from "./panels/redesign";
 
 const DEMO = {
   copy: "Our new protein bar — finally, a beef bar that doesn't taste like a cow.",
   intent: "Position our protein bar as great-tasting and high in protein.",
 };
 
-const QUESTIONS = [
-  { key: "understand", emoji: "🧠", title: "What did they understand?" },
-  { key: "feel", emoji: "❤️", title: "How did they feel?" },
-  { key: "risk", emoji: "⚠️", title: "Why might they react badly?" },
-  { key: "who", emoji: "🎯", title: "Who is affected?" },
-  { key: "cause", emoji: "🔍", title: "What exactly caused it?" },
-] as const;
-
-type View = "compose" | "analysis" | "rewrites";
+type View = "compose" | "dashboard" | "rewrites";
 
 export default function App() {
   const [copy, setCopy] = useState(DEMO.copy);
   const [intent, setIntent] = useState(DEMO.intent);
   const [scenario, setScenario] = useState("dietary_controversy_india");
+  const [ageMin, setAgeMin] = useState(18);
+  const [ageMax, setAgeMax] = useState(25);
   const [scenarios, setScenarios] = useState<string[]>(["quiet"]);
   const [report, setReport] = useState<Report | null>(null);
   const [rewrite, setRewrite] = useState<RewriteResult | null>(null);
@@ -49,24 +40,20 @@ export default function App() {
 
   useEffect(() => {
     api.scenarios().then((s) => setScenarios(s.scenarios)).catch(() => {});
-    api.health().then((h) => setHealth(`${h.personas_loaded} personas · ${h.anthropic_auth}`)).catch((e) => setHealth(`backend unreachable: ${e.message}`));
+    api.health().then((h) => setHealth(`${h.personas_loaded} personas`)).catch(() => setHealth("backend offline — use Demo"));
   }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
-  const runId = useMemo(() => report?.run_id, [report]);
-
   function loadDemo() {
-    // Hardcoded showcase — no backend needed. Loads a full report + rewrites
-    // from the "beef bar" case so every card is populated with realistic data.
     setError(null);
     setCopy(DEMO_REPORT.copy);
     setIntent(DEMO_REPORT.brand_intent || "");
     setReport(DEMO_REPORT);
     setRewrite(DEMO_REWRITE);
-    setView("analysis");
+    setView("dashboard");
   }
 
   async function run() {
@@ -74,9 +61,15 @@ export default function App() {
     setError(null);
     setRewrite(null);
     try {
-      const res = await api.simulate({ copy, brand_intent: intent, context_scenario: scenario });
+      const res = await api.simulate({
+        copy,
+        brand_intent: intent,
+        context_scenario: scenario,
+        target_age_min: ageMin,
+        target_age_max: ageMax,
+      });
       setReport(res.report);
-      setView("analysis");
+      setView("dashboard");
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -85,11 +78,16 @@ export default function App() {
   }
 
   async function doRewrite() {
-    if (!runId) return;
-    setRwLoading(true);
     setView("rewrites");
+    if (!report) return;
+    // Demo report already carries its rewrite.
+    if (report === DEMO_REPORT) {
+      setRewrite(DEMO_REWRITE);
+      return;
+    }
+    setRwLoading(true);
     try {
-      setRewrite(await api.rewrite(runId));
+      setRewrite(await api.rewrite(report.run_id));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -102,7 +100,7 @@ export default function App() {
       <nav className="sidebar">
         <div className="sidebar__logo">c</div>
         <IconButton title="Compose" active={view === "compose"} onClick={() => setView("compose")}>✎</IconButton>
-        <IconButton title="Analysis" active={view === "analysis"} onClick={() => report && setView("analysis")}>▤</IconButton>
+        <IconButton title="Dashboard" active={view === "dashboard"} onClick={() => report && setView("dashboard")}>▤</IconButton>
         <IconButton title="Rewrites" active={view === "rewrites"} onClick={() => report && setView("rewrites")}>↻</IconButton>
         <div className="sidebar__spacer" />
         <IconButton title="Toggle theme" onClick={() => setTheme((t) => (t === "light" ? "dark" : "light"))}>
@@ -110,21 +108,19 @@ export default function App() {
         </IconButton>
       </nav>
 
-      <main className="main">
+      <main className="main main--full">
         <header className="topbar">
           <div>
             <h1 className="topbar__title">crowdLens</h1>
             <div className="topbar__sub">{health || "connecting…"}</div>
           </div>
           <div className="topbar__spacer" />
-          <button className="btn btn--accent" onClick={loadDemo} title="Load a full hardcoded demo — no backend needed">
-            ▶ Demo
-          </button>
+          <button className="btn btn--accent" onClick={loadDemo}>▶ Demo</button>
           {report && (
             <div className="tabs">
-              {(["compose", "analysis", "rewrites"] as View[]).map((v) => (
+              {(["compose", "dashboard", "rewrites"] as View[]).map((v) => (
                 <button key={v} className={`tab ${view === v ? "tab--active" : ""}`} onClick={() => setView(v)}>
-                  {v === "compose" ? "Compose" : v === "analysis" ? "Analysis" : "Rewrites"}
+                  {v === "compose" ? "Compose" : v === "dashboard" ? "Dashboard" : "Rewrites"}
                 </button>
               ))}
             </div>
@@ -135,30 +131,18 @@ export default function App() {
 
         {view === "compose" && (
           <Composer
-            copy={copy}
-            setCopy={setCopy}
-            intent={intent}
-            setIntent={setIntent}
-            scenario={scenario}
-            setScenario={setScenario}
-            scenarios={scenarios}
-            onRun={run}
-            loading={loading}
-            report={report}
+            {...{ copy, setCopy, intent, setIntent, scenario, setScenario, scenarios, ageMin, setAgeMin, ageMax, setAgeMax, onRun: run, loading }}
           />
         )}
 
-        {view === "analysis" && report && <Analysis report={report} onRewrite={doRewrite} />}
-        {view === "analysis" && !report && <Empty>Run a simulation from Compose first.</Empty>}
+        {view === "dashboard" && report && <Dashboard report={report} onRewrite={doRewrite} />}
+        {view === "dashboard" && !report && <Empty>Run a simulation or click Demo.</Empty>}
 
         {view === "rewrites" && (
           <div className="qsection">
             <div className="qsection__head">
               <span className="qsection__emoji">✏️</span>
               <h3 className="qsection__title">Rewrite Suggestions</h3>
-              {report && !rewrite && !rwLoading && (
-                <button className="btn btn--accent" onClick={doRewrite} style={{ marginLeft: "auto" }}>Generate rewrites</button>
-              )}
             </div>
             <Rewrites result={rewrite} loading={rwLoading} />
           </div>
@@ -168,159 +152,76 @@ export default function App() {
   );
 }
 
-function Composer(props: {
-  copy: string;
-  setCopy: (s: string) => void;
-  intent: string;
-  setIntent: (s: string) => void;
-  scenario: string;
-  setScenario: (s: string) => void;
-  scenarios: string[];
-  onRun: () => void;
-  loading: boolean;
-  report: Report | null;
-}) {
-  const { copy, setCopy, intent, setIntent, scenario, setScenario, scenarios, onRun, loading, report } = props;
+function Composer(props: any) {
+  const { copy, setCopy, intent, setIntent, scenario, setScenario, scenarios, ageMin, setAgeMin, ageMax, setAgeMax, onRun, loading } = props;
   return (
-    <div className="composer">
-      <div>
+    <div className="compose-wrap">
+      <Card raised>
         <div className="field">
           <label className="field__label">Marketing copy</label>
           <textarea className="editor" value={copy} onChange={(e) => setCopy(e.target.value)} placeholder="Paste the copy you want to test…" />
         </div>
         <div className="field">
           <label className="field__label">What you meant to say (brand intent)</label>
-          <input className="input" value={intent} onChange={(e) => setIntent(e.target.value)} placeholder="The message you intend to land…" />
+          <input className="input" value={intent} onChange={(e) => setIntent(e.target.value)} />
         </div>
-        <div className="row">
-          <div style={{ flex: 1 }}>
+        <div className="row" style={{ gap: 16, alignItems: "flex-end" }}>
+          <div style={{ flex: 2 }}>
             <label className="field__label">Context scenario</label>
             <select className="select" value={scenario} onChange={(e) => setScenario(e.target.value)}>
-              {scenarios.map((s) => (
-                <option key={s} value={s}>{s.replace(/_/g, " ")}</option>
-              ))}
+              {scenarios.map((s: string) => <option key={s} value={s}>{s.replace(/_/g, " ")}</option>)}
             </select>
           </div>
-          <button className="btn btn--primary" style={{ alignSelf: "flex-end", height: 44 }} onClick={onRun} disabled={loading || !copy.trim()}>
+          <div style={{ flex: 1 }}>
+            <label className="field__label">Target audience age</label>
+            <div className="row" style={{ gap: 8 }}>
+              <input className="input" type="number" value={ageMin} min={0} max={120} onChange={(e) => setAgeMin(+e.target.value)} />
+              <span className="mut">–</span>
+              <input className="input" type="number" value={ageMax} min={0} max={120} onChange={(e) => setAgeMax(+e.target.value)} />
+            </div>
+          </div>
+          <button className="btn btn--primary" style={{ height: 44 }} onClick={onRun} disabled={loading || !copy.trim()}>
             {loading ? "Simulating…" : "Run simulation"}
           </button>
         </div>
-        <div className="row" style={{ marginTop: 12 }}>
-          <span className={`provenance provenance--mock`}>mock context</span>
-          <span className="tiny mut">Live GDELT/RSS context is wired in the backend; fixtures shown here.</span>
+        <div className="tiny mut" style={{ marginTop: 16 }}>
+          No backend running? Click <strong>▶ Demo</strong> for a full worked example.
         </div>
-      </div>
-
-      <Card raised title="Result">
-        {loading ? (
-          <div className="spinner" style={{ margin: "48px auto" }} />
-        ) : report ? (
-          <>
-            <ScoreGauge value={report.risk_index.value} band={report.risk_index.band} interval={report.risk_index.interval} />
-            {report.risk_index.override_fired && (
-              <div className="tiny" style={{ marginTop: 8, color: "var(--band-high)" }}>
-                ⚑ Band raised: a credible severe reaction can't be averaged away.
-              </div>
-            )}
-            <div style={{ marginTop: 20 }}>
-              <Meter value={report.intent_alignment.value} max={100} color="var(--cat-3)" label={<span>Intent Alignment<span className="tabular">{report.intent_alignment.value.toFixed(0)}%</span></span>} />
-            </div>
-            <p className="disclaimer">{report.risk_index.disclaimer}</p>
-          </>
-        ) : (
-          <Empty>Run a simulation to see the Risk Index, its confidence interval, and the full analysis.</Empty>
-        )}
       </Card>
     </div>
   );
 }
 
-function Analysis({ report, onRewrite }: { report: Report; onRewrite: () => void }) {
+/* The four-band full-screen dashboard. */
+function Dashboard({ report, onRewrite }: { report: Report; onRewrite: () => void }) {
   return (
-    <div>
-      {/* Headline row */}
-      <div className="grid" style={{ marginBottom: 32 }}>
-        <Card raised span={4} title={report.risk_index.label}>
-          <ScoreGauge value={report.risk_index.value} band={report.risk_index.band} interval={report.risk_index.interval} />
-        </Card>
-        <Card span={4} title="Intent Alignment Score">
-          <div className="big-num tabular">{report.intent_alignment.value.toFixed(0)}<sup>%</sup></div>
-          <div className="tiny mut" style={{ marginTop: 8 }}>Share of the audience that understood the intended message. A campaign can be safe and still fail here.</div>
-        </Card>
-        <Card span={4} inverted title="Context">
-          <div className="big-num tabular" style={{ color: "#fff" }}>{report.risk_index.components.context_multiplier.toFixed(2)}×</div>
-          <div className="tiny" style={{ color: "rgba(255,255,255,.6)", marginTop: 8 }}>{report.context.scenario.replace(/_/g, " ")}</div>
-          <div style={{ marginTop: 12 }}>
-            <span className={`provenance provenance--${report.context.provenance === "mock" ? "mock" : "live"}`}>{report.context.provenance}</span>
-          </div>
-        </Card>
+    <div className="dash">
+      {/* Band 1 — L1 metrics */}
+      <L1Strip report={report} />
+
+      {/* Band 2 — feel/comments (left, stacked) + campaign highlight/rewrites (right) */}
+      <div className="band band--2">
+        <div className="col col--stack">
+          <FeelChart report={report} />
+          <CommentCloud report={report} />
+        </div>
+        <div className="col">
+          <CampaignHighlight report={report} onRewrite={onRewrite} />
+        </div>
       </div>
 
-      {report.control_canary?.fired && (
-        <div className="alert"><strong>⚙ Calibration warning:</strong> {report.control_canary.message}</div>
-      )}
+      {/* Band 3 — personas positive / negative */}
+      <div className="band-title">Personas</div>
+      <PersonaBoards report={report} />
 
-      {/* 🧠 */}
-      <QSection q={QUESTIONS[0]}>
-        <div className="grid">
-          <IntentVsInterpretation report={report} />
-          <WhatTheyThink report={report} />
-        </div>
-      </QSection>
-
-      {/* ❤️ */}
-      <QSection q={QUESTIONS[1]}>
-        <div className="grid">
-          <EmotionalResponse report={report} />
-          <SimulatedComments report={report} />
-          <PersonaReactions report={report} />
-        </div>
-      </QSection>
-
-      {/* ⚠️ */}
-      <QSection q={QUESTIONS[2]}>
-        <div className="grid">
-          <RiskAnatomy report={report} />
-          <SeverityLikelihood report={report} />
-          <ControversialVsMisunderstood report={report} />
-        </div>
-      </QSection>
-
-      {/* 🎯 */}
-      <QSection q={QUESTIONS[3]}>
-        <div className="grid">
-          <WhoMightMisunderstand report={report} />
-          <RegionHeatmap report={report} />
-          <TargetVsUnintended report={report} />
-        </div>
-      </QSection>
-
-      {/* 🔍 */}
-      <QSection q={QUESTIONS[4]}>
-        <div className="grid">
-          <TriggerView report={report} />
-          <BacklashPathway report={report} />
-          <MemePotential report={report} />
-        </div>
-      </QSection>
-
-      <BlindSpots report={report} />
-
-      <div className="row" style={{ justifyContent: "center", margin: "24px 0" }}>
-        <button className="btn btn--accent" onClick={onRewrite}>✏️ Fix it — generate rewrites</button>
+      {/* Band 4 — heatmap · venn · comparison · anatomy */}
+      <div className="band-title">Regional & comparative</div>
+      <div className="band band--4">
+        <IndiaHeatmap report={report} />
+        <TargetVenn report={report} />
+        <CampaignComparison report={report} />
+        <RiskAnatomyRadar report={report} />
       </div>
     </div>
-  );
-}
-
-function QSection({ q, children }: { q: (typeof QUESTIONS)[number]; children: React.ReactNode }) {
-  return (
-    <section className="qsection">
-      <div className="qsection__head">
-        <span className="qsection__emoji">{q.emoji}</span>
-        <h3 className="qsection__title">{q.title}</h3>
-      </div>
-      {children}
-    </section>
   );
 }
