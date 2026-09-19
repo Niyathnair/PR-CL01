@@ -30,13 +30,17 @@ Eight questions, twenty-four analysis views:
 | ✏️ | How can we fix it? |
 | 🔄 | Did the fix actually work? |
 
+## Design
+
+**[DESIGN-SYSTEM.md](DESIGN-SYSTEM.md)** — visual language: palette, typography, components, and how risk bands and Tier-2 findings are rendered.
+
 ## Plan
 
 **[BacklashTest-Complete-Plan.md](BacklashTest-Complete-Plan.md)** — the complete specification: product framing, persona graph architecture, full mathematical treatment, all 24 dashboard panels, validation strategy, build phases, and an honest accounting of the risks.
 
 ## Status
 
-Planning. Nothing implemented yet.
+Backend stages 1-2 implemented (see [backend/](backend/)) — persona engine, scoring, API, rewrite engine. No frontend yet; the design system above defines the language for when there is one.
 
 ---
 
