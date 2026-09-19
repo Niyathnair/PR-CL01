@@ -46,7 +46,10 @@ async def lifespan(app: FastAPI):
 
     yield
 
-    await app.state.llm.aclose()
+    # Shutdown must not fail on a client that has no aclose (e.g. a test double).
+    closer = getattr(app.state.llm, "aclose", None)
+    if closer is not None:
+        await closer()
 
 
 app = FastAPI(

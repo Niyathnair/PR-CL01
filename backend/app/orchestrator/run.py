@@ -15,6 +15,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from app.analysis import projections
+from app.analysis.graph import build_pathway, interpretation_clusters
 from app.composition.compose import build_composites, run_composite
 from app.context.provider import ContextBundle, get_context_provider
 from app.llm.client import LLMClient
@@ -68,12 +69,65 @@ async def run_persona(
     )
     assert isinstance(reaction, LLMReaction)
 
+    data = reaction.model_dump()
+    data["triggers"] = repair_trigger_offsets(data.get("triggers", []), copy, node.id)
+
     return ReactionObject(
         persona_id=node.id,
         persona_version=node.version,
         tier=2 if is_composite else 1,
-        **reaction.model_dump(),
+        **data,
     )
+
+
+def repair_trigger_offsets(
+    triggers: list[dict[str, Any]], copy: str, persona_id: str
+) -> list[dict[str, Any]]:
+    """Verify each trigger's offsets against the copy, and repair or drop them.
+
+    Models miscount characters routinely. Unchecked, the offsets drive inline
+    highlighting in the composer, so a wrong offset silently underlines the
+    wrong words — the marketer then edits the wrong part of their copy, which is
+    worse than no highlight at all.
+
+    Trust the ``span`` text over the numbers: if the span appears in the copy we
+    recompute the offsets from it. A span that does not appear at all is
+    discarded, because we cannot show the user something we cannot locate.
+    """
+    repaired: list[dict[str, Any]] = []
+
+    for t in triggers:
+        span = (t.get("span") or "").strip()
+        if not span:
+            continue
+
+        start, end = t.get("char_start", 0), t.get("char_end", 0)
+
+        # Already correct.
+        if 0 <= start < end <= len(copy) and copy[start:end] == span:
+            repaired.append(t)
+            continue
+
+        idx = copy.find(span)
+        if idx == -1:
+            # Try case-insensitively before giving up.
+            idx = copy.lower().find(span.lower())
+            if idx != -1:
+                t["span"] = copy[idx : idx + len(span)]
+
+        if idx == -1:
+            logger.warning(
+                "Persona %s reported trigger %r that does not appear in the copy; "
+                "dropping it rather than highlighting the wrong span.",
+                persona_id,
+                span[:60],
+            )
+            continue
+
+        t["char_start"], t["char_end"] = idx, idx + len(span)
+        repaired.append(t)
+
+    return repaired
 
 
 def client_model(is_composite: bool) -> str:
@@ -193,6 +247,7 @@ def build_report(result: RunResult, registry: dict[str, PersonaNode]) -> dict[st
         # ── the eight questions ───────────────────────────────────
         "understanding": {
             "intent_vs_interpretation": _intent_vs_interpretation(scored, registry),
+            "what_they_think_youre_saying": interpretation_clusters(scored),
             "intent_alignment_breakdown": [
                 {
                     "persona_id": p.reaction.persona_id,
@@ -223,6 +278,7 @@ def build_report(result: RunResult, registry: dict[str, PersonaNode]) -> dict[st
         "cause": {
             "trigger_index": projections.trigger_index(scored),
             "meme_potential": projections.meme_potential(scored),
+            "backlash_pathway": build_pathway(scored, registry, result.copy).as_dict(),
         },
         # ── tier 2, reported separately and never in the score ────
         "blind_spot_findings": projections.blind_spot_findings(result.composites),

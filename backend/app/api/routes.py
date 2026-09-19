@@ -161,6 +161,8 @@ _PANEL_PATHS: dict[str, tuple[str, ...]] = {
     "intent_alignment": ("intent_alignment",),
     "intent_vs_interpretation": ("understanding", "intent_vs_interpretation"),
     "intent_alignment_breakdown": ("understanding", "intent_alignment_breakdown"),
+    "what_they_think_youre_saying": ("understanding", "what_they_think_youre_saying"),
+    "backlash_pathway": ("cause", "backlash_pathway"),
     "emotional_response": ("feeling", "emotional_response"),
     "persona_reactions": ("feeling", "persona_reactions"),
     "simulated_comments": ("feeling", "simulated_comments"),

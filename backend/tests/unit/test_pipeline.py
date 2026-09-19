@@ -30,6 +30,9 @@ class StubLLM:
         self.usage = _Usage()
         self.credential = Credential(kind="api_key", value="stub", source_env_var="TEST")
 
+    async def aclose(self) -> None:
+        return None
+
     async def complete_json(self, *, system, user, model, max_tokens, schema, temperature=0.3):
         self.calls.append(system[:80])
 
