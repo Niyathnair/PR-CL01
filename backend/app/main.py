@@ -42,6 +42,7 @@ async def lifespan(app: FastAPI):
 
     app.state.llm = LLMClient(credential)
     app.state.store = RunStore()
+    app.state.runs = RunStore()
 
     yield
 

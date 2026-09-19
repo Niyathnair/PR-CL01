@@ -17,6 +17,7 @@ from app.context.provider import list_scenarios
 from app.llm.auth import describe_credential
 from app.orchestrator.run import build_report, execute_run
 from app.personas.registry import get_registry, reload_registry
+from app.rewrite.engine import rewrite_and_rescore
 from app.store import RunStore
 
 logger = logging.getLogger(__name__)
@@ -61,6 +62,11 @@ def _store(request: Request) -> RunStore:
     return request.app.state.store
 
 
+def _runs(request: Request) -> RunStore:
+    """Raw RunResult objects, kept so /rewrite can reuse a run's reactions."""
+    return request.app.state.runs
+
+
 @router.get("/health")
 async def health(request: Request) -> dict[str, Any]:
     cred = request.app.state.llm.credential
@@ -96,7 +102,44 @@ async def simulate(req: SimulateRequest, request: Request) -> SimulateResponse:
 
     report = build_report(result, registry)
     _store(request).put(result.run_id, report)
+    _runs(request).put(result.run_id, result)
     return SimulateResponse(run_id=result.run_id, report=report)
+
+
+class RewriteRequest(BaseModel):
+    constraints: str | None = Field(
+        default=None,
+        max_length=1000,
+        description="Hard constraints: character limits, mandatory claims, required legal language",
+    )
+
+
+@router.post("/runs/{run_id}/rewrite")
+async def rewrite(run_id: str, req: RewriteRequest, request: Request) -> dict[str, Any]:
+    """Generate three variants and re-score each one.
+
+    Improvements are demonstrated, not claimed: every variant goes back through
+    the personas that flagged the original, plus controls to catch a rewrite
+    that fixes one problem and creates another.
+    """
+    result = _runs(request).get(run_id)
+    if result is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Run {run_id} not found or expired. Re-run POST /v1/simulate.",
+        )
+
+    registry = get_registry()
+    try:
+        return await rewrite_and_rescore(
+            client=request.app.state.llm,
+            result=result,
+            registry=registry,
+            constraints=req.constraints,
+        )
+    except Exception as exc:
+        logger.exception("Rewrite failed")
+        raise HTTPException(status_code=502, detail=f"Rewrite failed: {exc}") from exc
 
 
 @router.get("/runs")
