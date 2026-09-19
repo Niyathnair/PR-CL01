@@ -40,7 +40,7 @@ Eight questions, twenty-four analysis views:
 
 ## Status
 
-Backend stages 1-2 implemented (see [backend/](backend/)) — persona engine, scoring, API, rewrite engine. No frontend yet; the design system above defines the language for when there is one.
+Backend stages 1-4 implemented (see [backend/](backend/)) — persona engine, scoring, rewrite engine, backlash graph, and live news ingest with a failure corpus. Frontend dashboard implemented (see [frontend/](frontend/)) following the design system above.
 
 ---
 
