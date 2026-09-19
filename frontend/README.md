@@ -16,6 +16,14 @@ npm run dev
 
 Opens on http://localhost:5173 and proxies `/v1/*` to the backend.
 
+### No backend? Click **▶ Demo**
+
+The top bar has a **Demo** button that loads a full hardcoded report — every
+card populated with the "beef bar" case, including varied persona reactions,
+the emotion spread, the backlash pathway, blind spots, and three re-scored
+rewrites. It needs no backend and no Claude credential, so the dashboard can be
+shown standalone.
+
 ## Structure
 
 - `src/App.tsx` — shell, composer, and the eight-question analysis layout

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { api, type Report, type RewriteResult } from "./lib/api";
+import { DEMO_REPORT, DEMO_REWRITE } from "./lib/demo";
 import { Card, IconButton, ScoreGauge, Chip, Empty, Meter } from "./components/ui";
 import {
   IntentVsInterpretation,
@@ -57,6 +58,17 @@ export default function App() {
 
   const runId = useMemo(() => report?.run_id, [report]);
 
+  function loadDemo() {
+    // Hardcoded showcase — no backend needed. Loads a full report + rewrites
+    // from the "beef bar" case so every card is populated with realistic data.
+    setError(null);
+    setCopy(DEMO_REPORT.copy);
+    setIntent(DEMO_REPORT.brand_intent || "");
+    setReport(DEMO_REPORT);
+    setRewrite(DEMO_REWRITE);
+    setView("analysis");
+  }
+
   async function run() {
     setLoading(true);
     setError(null);
@@ -105,6 +117,9 @@ export default function App() {
             <div className="topbar__sub">{health || "connecting…"}</div>
           </div>
           <div className="topbar__spacer" />
+          <button className="btn btn--accent" onClick={loadDemo} title="Load a full hardcoded demo — no backend needed">
+            ▶ Demo
+          </button>
           {report && (
             <div className="tabs">
               {(["compose", "analysis", "rewrites"] as View[]).map((v) => (
