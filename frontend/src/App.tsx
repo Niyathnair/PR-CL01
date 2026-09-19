@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { api, type Report, type RewriteResult } from "./lib/api";
 import { DEMO_REPORT, DEMO_REWRITE } from "./lib/demo";
 import { Card, IconButton, Empty } from "./components/ui";
-import { Rewrites } from "./panels/special";
 import {
   L1Strip,
   FeelChart,
@@ -20,7 +19,7 @@ const DEMO = {
   intent: "Position our protein bar as great-tasting and high in protein.",
 };
 
-type View = "compose" | "dashboard" | "rewrites";
+type View = "compose" | "dashboard";
 
 export default function App() {
   const [copy, setCopy] = useState(DEMO.copy);
@@ -78,7 +77,6 @@ export default function App() {
   }
 
   async function doRewrite() {
-    setView("rewrites");
     if (!report) return;
     // Demo report already carries its rewrite.
     if (report === DEMO_REPORT) {
@@ -101,7 +99,6 @@ export default function App() {
         <div className="sidebar__logo">c</div>
         <IconButton title="Compose" active={view === "compose"} onClick={() => setView("compose")}>✎</IconButton>
         <IconButton title="Dashboard" active={view === "dashboard"} onClick={() => report && setView("dashboard")}>▤</IconButton>
-        <IconButton title="Rewrites" active={view === "rewrites"} onClick={() => report && setView("rewrites")}>↻</IconButton>
         <div className="sidebar__spacer" />
         <IconButton title="Toggle theme" onClick={() => setTheme((t) => (t === "light" ? "dark" : "light"))}>
           {theme === "light" ? "☾" : "☀"}
@@ -118,9 +115,9 @@ export default function App() {
           <button className="btn btn--accent" onClick={loadDemo}>▶ Demo</button>
           {report && (
             <div className="tabs">
-              {(["compose", "dashboard", "rewrites"] as View[]).map((v) => (
+              {(["compose", "dashboard"] as View[]).map((v) => (
                 <button key={v} className={`tab ${view === v ? "tab--active" : ""}`} onClick={() => setView(v)}>
-                  {v === "compose" ? "Compose" : v === "dashboard" ? "Dashboard" : "Rewrites"}
+                  {v === "compose" ? "Compose" : "Dashboard"}
                 </button>
               ))}
             </div>
@@ -135,18 +132,10 @@ export default function App() {
           />
         )}
 
-        {view === "dashboard" && report && <Dashboard report={report} onRewrite={doRewrite} />}
-        {view === "dashboard" && !report && <Empty>Run a simulation or click Demo.</Empty>}
-
-        {view === "rewrites" && (
-          <div className="qsection">
-            <div className="qsection__head">
-              <span className="qsection__emoji">✏️</span>
-              <h3 className="qsection__title">Rewrite Suggestions</h3>
-            </div>
-            <Rewrites result={rewrite} loading={rwLoading} />
-          </div>
+        {view === "dashboard" && report && (
+          <Dashboard report={report} rewrite={rewrite} rwLoading={rwLoading} onRewrite={doRewrite} />
         )}
+        {view === "dashboard" && !report && <Empty>Run a simulation or click Demo.</Empty>}
       </main>
     </div>
   );
@@ -193,20 +182,20 @@ function Composer(props: any) {
 }
 
 /* The four-band full-screen dashboard. */
-function Dashboard({ report, onRewrite }: { report: Report; onRewrite: () => void }) {
+function Dashboard({ report, rewrite, rwLoading, onRewrite }: { report: Report; rewrite: RewriteResult | null; rwLoading: boolean; onRewrite: () => void }) {
   return (
     <div className="dash">
       {/* Band 1 — L1 metrics */}
       <L1Strip report={report} />
 
-      {/* Band 2 — feel/comments (left, stacked) + campaign highlight/rewrites (right) */}
+      {/* Band 2 — feel/comments (left, stacked) + campaign highlight WITH inline rewrites (right) */}
       <div className="band band--2">
         <div className="col col--stack">
           <FeelChart report={report} />
           <CommentCloud report={report} />
         </div>
         <div className="col">
-          <CampaignHighlight report={report} onRewrite={onRewrite} />
+          <CampaignHighlight report={report} rewrite={rewrite} rwLoading={rwLoading} onRewrite={onRewrite} />
         </div>
       </div>
 
@@ -214,14 +203,15 @@ function Dashboard({ report, onRewrite }: { report: Report; onRewrite: () => voi
       <div className="band-title">Personas</div>
       <PersonaBoards report={report} />
 
-      {/* Band 4 — heatmap · venn · comparison · anatomy */}
+      {/* Band 4 — top row: region · target audience · risk anatomy */}
       <div className="band-title">Regional & comparative</div>
-      <div className="band band--4">
+      <div className="band band--3">
         <IndiaHeatmap report={report} />
         <TargetVenn report={report} />
-        <CampaignComparison report={report} />
         <RiskAnatomyRadar report={report} />
       </div>
+      {/* Band 4 — below: comparison table, full width */}
+      <CampaignComparison report={report} />
     </div>
   );
 }

@@ -2,7 +2,7 @@
    highlight+rewrites, persona illustrations, India map, target Venn, comparison,
    risk anatomy. */
 
-import type { Report } from "../lib/api";
+import type { Report, RewriteResult } from "../lib/api";
 import { BAND_COLOR, type Band } from "../lib/api";
 import { Card, Chip, BandChip, Empty, emotionColor } from "../components/ui";
 import { INDIA_PATHS, INDIA_VB } from "../lib/indiaMap";
@@ -139,7 +139,7 @@ export function CommentCloud({ report }: { report: Report }) {
             }}
             title={`${box.label}`}
           >
-            <span className="tm-text" style={{ fontSize: `${Math.min(15, 8 + box.w * 0.08 + box.h * 0.04)}px` }}>
+            <span className="tm-text" style={{ fontSize: `${Math.max(12, Math.min(18, 11 + box.w * 0.09 + box.h * 0.05))}px` }}>
               "{box.text}"
             </span>
           </div>
@@ -150,8 +150,8 @@ export function CommentCloud({ report }: { report: Report }) {
   );
 }
 
-/* ── Band 2 right: campaign copy highlighted + rewrites ── */
-export function CampaignHighlight({ report, onRewrite }: { report: Report; onRewrite: () => void }) {
+/* ── Band 2 right: campaign copy highlighted + rewrites inline ── */
+export function CampaignHighlight({ report, rewrite, rwLoading, onRewrite }: { report: Report; rewrite: RewriteResult | null; rwLoading: boolean; onRewrite: () => void }) {
   const copy = report.copy;
   const spans = [...report.cause.trigger_index].sort((a, b) => a.char_start - b.char_start);
   const segs: { text: string; trig?: (typeof spans)[0] }[] = [];
@@ -182,9 +182,47 @@ export function CampaignHighlight({ report, onRewrite }: { report: Report; onRew
           )
         )}
       </div>
-      <div className="row" style={{ marginTop: 16, justifyContent: "space-between" }}>
+      <div className="row" style={{ marginTop: 12, justifyContent: "space-between" }}>
         <span className="tiny mut">Hover a red span for why it's risky.</span>
-        <button className="btn btn--accent" onClick={onRewrite}>✏️ See rewrites</button>
+        {!rewrite && !rwLoading && (
+          <button className="btn btn--accent" onClick={onRewrite}>✏️ Generate rewrites</button>
+        )}
+      </div>
+
+      {/* Inline rewrites — no separate tab. */}
+      <div className="hl-rewrites">
+        <div className="hl-rewrites__head">✏️ Rewrites</div>
+        {rwLoading ? (
+          <div className="spinner" style={{ margin: "24px auto" }} />
+        ) : !rewrite ? (
+          <div className="tiny mut">Generate rewrites to see safer versions re-scored here.</div>
+        ) : (
+          <>
+            <div className="rw-orig">
+              <span className="tiny mut">Original</span>
+              <span className="row" style={{ gap: 8 }}>
+                <strong className="tabular">{rewrite.original.risk_index.toFixed(0)}</strong>
+                <BandChip band={rewrite.original.band} />
+              </span>
+            </div>
+            {rewrite.variants.map((v) => (
+              <div key={v.kind} className="rw-card">
+                <div className="row" style={{ justifyContent: "space-between", marginBottom: 6 }}>
+                  <Chip tone={v.kind === rewrite.best_variant ? "accent" : "neutral"}>{v.kind.replace("_", " ")}</Chip>
+                  <span className="row" style={{ gap: 8 }}>
+                    <strong className="tabular">{v.risk_index.toFixed(0)}</strong>
+                    <BandChip band={v.band} />
+                  </span>
+                </div>
+                <div className="rw-text">"{v.text}"</div>
+                <div className="tiny mut" style={{ marginTop: 4 }}>
+                  IAS {v.intent_alignment.toFixed(0)}% · sacrificed: {v.sacrificed || "nothing material"}
+                </div>
+              </div>
+            ))}
+            {!rewrite.any_improved && rewrite.note && <div className="tiny" style={{ color: "var(--band-elevated)", marginTop: 6 }}>{rewrite.note}</div>}
+          </>
+        )}
       </div>
     </Card>
   );
@@ -324,34 +362,93 @@ export function TargetVenn({ report }: { report: Report }) {
   );
 }
 
-/* ── Band 4c: comparison with previous campaigns ── */
+/* ── Band 4 (full width, below): comparison as a table.
+   Columns = campaigns (THIS campaign first + highlighted, then previous ones);
+   rows = metrics. Cells tinted red (high) → green (low). ── */
+const CMP_METRIC_LABEL: Record<string, string> = {
+  cultural: "Cultural sensitivity",
+  religious: "Religious sensitivity",
+  meme_potential: "Meme / virality",
+  polarization: "Polarization",
+  misinterpretation: "Misinterpretation",
+  tone_mismatch: "Tone mismatch",
+  confusion: "Confusion",
+};
+function cellColor(v: number): string {
+  if (v >= 0.7) return "var(--band-severe)";
+  if (v >= 0.5) return "var(--band-high)";
+  if (v >= 0.3) return "var(--band-elevated)";
+  return "var(--band-clear)";
+}
 export function CampaignComparison({ report }: { report: Report }) {
   const c = report.campaign_comparison;
-  if (!c.available) return <Card title="Similar past campaigns"><Empty>No similar campaigns in the corpus yet — run the news sync.</Empty></Card>;
+  if (!c.available) return <Card title="Compared to similar past campaigns"><Empty>No similar campaigns in the corpus yet — run the news sync.</Empty></Card>;
+
+  // Column set: current campaign first, then each past match.
+  const cols = [
+    { name: "This campaign", subtitle: "your copy", scores: c.this_campaign.risk_dimensions, current: true, similarity: 1, caveat: null as string | null },
+    ...c.matches.map((m) => ({
+      name: m.brand || m.source,
+      subtitle: `${(m.similarity * 100).toFixed(0)}% similar`,
+      scores: m.scores || {},
+      current: false,
+      similarity: m.similarity,
+      caveat: m.is_reliable ? null : m.caveat,
+    })),
+  ];
+
+  // Union of metric keys, ordered by a preferred label order then the rest.
+  const preferred = Object.keys(CMP_METRIC_LABEL);
+  const present = new Set<string>();
+  cols.forEach((col) => Object.keys(col.scores).forEach((k) => present.add(k)));
+  const metrics = [...preferred.filter((k) => present.has(k)), ...[...present].filter((k) => !preferred.includes(k))];
+
   return (
     <Card title="Compared to similar past campaigns">
-      <div className="stack">
-        {c.matches.map((m, i) => (
-          <div key={i} className="cmp" tabIndex={0}>
-            <div className="row" style={{ justifyContent: "space-between" }}>
-              <strong className="tiny">{m.brand || m.source}</strong>
-              <Chip>{(m.similarity * 100).toFixed(0)}% similar</Chip>
-            </div>
-            <div className="tiny" style={{ margin: "4px 0" }}>{m.title}</div>
-            {m.outcome && <div className="tiny mut">→ {m.outcome}</div>}
-            {m.scores && (
-              <div className="cmp-bars">
-                {Object.entries(m.scores).map(([k, val]) => (
-                  <div key={k} className="cmp-bar" title={`${k} ${(val * 100).toFixed(0)}`}>
-                    <div style={{ height: `${val * 100}%`, background: val > 0.6 ? "var(--band-high)" : "var(--cat-3)" }} />
-                  </div>
-                ))}
-              </div>
-            )}
-            {!m.is_reliable && m.caveat && <div className="tiny" style={{ color: "var(--band-elevated)", marginTop: 4 }}>⚠ {m.caveat}</div>}
-          </div>
-        ))}
+      <div className="cmp-table-wrap">
+        <table className="cmp-table">
+          <thead>
+            <tr>
+              <th className="cmp-th-metric">Metric</th>
+              {cols.map((col, i) => (
+                <th key={i} className={col.current ? "cmp-th-current" : ""}>
+                  <div className="cmp-colname">{col.name}</div>
+                  <div className="cmp-colsub">{col.subtitle}</div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {metrics.map((k) => (
+              <tr key={k}>
+                <td className="cmp-metric">{CMP_METRIC_LABEL[k] || k}</td>
+                {cols.map((col, i) => {
+                  const v = col.scores[k];
+                  return (
+                    <td key={i} className={col.current ? "cmp-cell-current" : ""}>
+                      {v === undefined ? (
+                        <span className="mut">—</span>
+                      ) : (
+                        <span className="cmp-score" style={{ background: cellColor(v) }}>{(v * 100).toFixed(0)}</span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+            {/* Outcome row for past campaigns. */}
+            <tr>
+              <td className="cmp-metric">Outcome</td>
+              {cols.map((col, i) => (
+                <td key={i} className={col.current ? "cmp-cell-current" : ""}>
+                  {col.current ? <span className="mut tiny">—</span> : <span className="tiny">{(c.matches[i - 1]?.outcome) || "—"}</span>}
+                </td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
       </div>
+      <div className="tiny mut" style={{ marginTop: 10 }}>{c.caveat}</div>
     </Card>
   );
 }
