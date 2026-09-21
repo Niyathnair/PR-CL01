@@ -78,34 +78,70 @@ export function FeelChart({ report }: { report: Report }) {
    most-negative reaction the biggest/reddest, the most-positive smallest/green,
    with the comment text inside each box. ── */
 
-// Squarified-ish treemap: simple slice-and-dice that alternates split direction,
-// good enough for ~8-12 boxes and keeps boxes readable.
 interface TNode { text: string; weight: number; sentiment: string; label: string; tone: number }
-function layoutTreemap(items: TNode[], x: number, y: number, w: number, h: number, horizontal: boolean): Array<TNode & { x: number; y: number; w: number; h: number }> {
-  if (items.length === 0) return [];
-  if (items.length === 1) return [{ ...items[0], x, y, w, h }];
+type Placed = TNode & { x: number; y: number; w: number; h: number };
+
+// Squarified treemap (Bruls, Huizing, van Wijk): packs weighted rectangles so
+// each tile is as close to square as possible — compact, readable, no slivers.
+// Weights are area shares of the 100×100 box; items should be pre-sorted desc.
+function squarify(items: TNode[], x: number, y: number, w: number, h: number): Placed[] {
+  const out: Placed[] = [];
   const total = items.reduce((s, i) => s + i.weight, 0) || 1;
-  // Split items into two halves of roughly equal weight.
-  let acc = 0, idx = 0;
-  for (let i = 0; i < items.length; i++) { acc += items[i].weight; if (acc >= total / 2) { idx = i + 1; break; } }
-  idx = Math.max(1, Math.min(items.length - 1, idx));
-  const a = items.slice(0, idx), b = items.slice(idx);
-  const aw = a.reduce((s, i) => s + i.weight, 0) / total;
-  if (horizontal) {
-    const wa = w * aw;
-    return [...layoutTreemap(a, x, y, wa, h, false), ...layoutTreemap(b, x + wa, y, w - wa, h, false)];
-  } else {
-    const ha = h * aw;
-    return [...layoutTreemap(a, x, y, w, ha, true), ...layoutTreemap(b, x, y + ha, w, h - ha, true)];
+  const area = w * h;
+  // Scale each item's weight to an absolute area within this box.
+  const nodes = items.map((i) => ({ node: i, area: (i.weight / total) * area }));
+
+  const worst = (row: { area: number }[], side: number): number => {
+    const s = row.reduce((a, r) => a + r.area, 0);
+    const mx = Math.max(...row.map((r) => r.area));
+    const mn = Math.min(...row.map((r) => r.area));
+    const s2 = s * s, side2 = side * side;
+    return Math.max((side2 * mx) / s2, s2 / (side2 * mn));
+  };
+
+  let rx = x, ry = y, rw = w, rh = h;
+  let i = 0;
+  while (i < nodes.length) {
+    const side = Math.min(rw, rh);
+    const row: typeof nodes = [nodes[i]];
+    let j = i + 1;
+    while (j < nodes.length && worst(row, side) >= worst([...row, nodes[j]], side)) {
+      row.push(nodes[j]); j++;
+    }
+    // Lay this row along the shorter side, then shrink the remaining rectangle.
+    const rowArea = row.reduce((a, r) => a + r.area, 0);
+    if (rw <= rh) {
+      const rowH = rowArea / rw;
+      let cx = rx;
+      for (const r of row) { const cw = r.area / rowH; out.push({ ...r.node, x: cx, y: ry, w: cw, h: rowH }); cx += cw; }
+      ry += rowH; rh -= rowH;
+    } else {
+      const rowW = rowArea / rh;
+      let cy = ry;
+      for (const r of row) { const ch = r.area / rowW; out.push({ ...r.node, x: rx, y: cy, w: rowW, h: ch }); cy += ch; }
+      rx += rowW; rw -= rowW;
+    }
+    i = j;
   }
+  return out;
 }
 
-// Red (bad) → green (good) tint from a signed tone in [-1, 1].
+// Red (bad) → yellow (neutral) → green (good) tint from a signed tone in [-1, 1].
 function toneColor(tone: number): string {
-  if (tone > 0.15) return "var(--band-clear)"; // favourable → green
-  if (tone < -0.5) return "var(--band-severe)"; // strongly negative → red
-  if (tone < -0.15) return "var(--band-high)"; // negative → orange-red
-  return "var(--cat-7)"; // neutral → grey
+  if (tone > 0.15) return "var(--tm-green)"; // favourable → green
+  if (tone < -0.5) return "var(--tm-red)"; // strongly negative → red
+  if (tone < -0.15) return "var(--tm-red)"; // negative → red
+  return "var(--tm-yellow)"; // neutral → mild yellow
+}
+
+// Weight boost so negative tiles read biggest, neutral mid, positive smallest —
+// area emphasis independent of raw comment counts. Negatives get a floor so an
+// important-but-rare backlash comment never collapses into an unreadable sliver.
+function toneWeight(base: number, tone: number): number {
+  const w = Math.max(base, 0.02);
+  if (tone < -0.15) return Math.max(w, 0.16) * 3.4;  // negative → biggest, with a floor
+  if (tone > 0.15) return w * 0.6;                    // positive → smallest
+  return w * 1.05;                                    // neutral → mid
 }
 
 export function CommentCloud({ report }: { report: Report }) {
@@ -120,11 +156,11 @@ export function CommentCloud({ report }: { report: Report }) {
     const sev = sevOf[c.persona_id] ?? 0.2;
     // tone: negative sentiment pushes toward red (scaled by severity), favourable toward green.
     const tone = sent === "opposed" ? -sev : sent === "favorable" ? 0.6 : -0.05;
-    return { text: c.text, weight: Math.max(c.weight, 0.02), sentiment: sent, label: c.label, tone };
+    return { text: c.text, weight: toneWeight(c.weight, tone), sentiment: sent, label: c.label, tone };
   });
   // Biggest + reddest first: sort by weight desc so the layout places large boxes first.
   nodes.sort((a, b) => b.weight - a.weight);
-  const boxes = layoutTreemap(nodes, 0, 0, 100, 100, true);
+  const boxes = squarify(nodes, 0, 0, 100, 100);
 
   return (
     <Card title="What they're saying">
@@ -134,18 +170,26 @@ export function CommentCloud({ report }: { report: Report }) {
             key={i}
             className="tm-box"
             style={{
-              left: `${box.x}%`, top: `${box.y}%`, width: `${box.w}%`, height: `${box.h}%`,
+              left: `${box.x}%`, top: `${box.y}%`,
+              // Cell size comes in via CSS vars so the stylesheet can inset a hairline gap.
+              ["--tm-w" as string]: `${box.w}%`,
+              ["--tm-h" as string]: `${box.h}%`,
               background: toneColor(box.tone),
             }}
             title={`${box.label}`}
           >
-            <span className="tm-text" style={{ fontSize: `${Math.max(12, Math.min(18, 11 + box.w * 0.09 + box.h * 0.05))}px` }}>
+            <span
+              className="tm-text"
+              style={{
+                fontSize: `clamp(11px, ${(Math.min(box.w, box.h) * 0.16 + 8).toFixed(1)}px, 22px)`,
+                WebkitLineClamp: box.h > 30 ? 6 : box.h > 18 ? 4 : 2,
+              }}
+            >
               "{box.text}"
             </span>
           </div>
         ))}
       </div>
-      <div className="tiny mut" style={{ marginTop: 8 }}>Box size = how many react that way. Red = negative, green = positive.</div>
     </Card>
   );
 }

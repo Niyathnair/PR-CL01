@@ -638,11 +638,26 @@
 .segbar__key { display: inline-flex; align-items: center; gap: 5px; font-size: 13.5px; color: var(--text-primary); }
 .segbar__dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
 
-/* ══ Treemap ═════════════════════════════════════════════════════════════ */
-.treemap { position: relative; width: 100%; aspect-ratio: 16 / 13; border-radius: var(--radius-inner); overflow: hidden; box-shadow: inset 0 0 0 1px var(--hairline-soft); }
-.tm-box { position: absolute; box-sizing: border-box; border: 2px solid var(--surface); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; }
+/* ══ Treemap — snug mosaic, individually rounded tiles (no gutters) ═══════ */
+.treemap { position: relative; width: 100%; aspect-ratio: 16 / 13; }
+.tm-box {
+  position: absolute; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; padding: clamp(4px, 1.4cqw, 12px);
+  container-type: size;
+  border-radius: clamp(10px, 1.8cqw, 18px);
+  /* Tiles butt right up to each other; a hairline of the page shows through the
+     rounded corners only. A tiny inset keeps neighbours from overlapping edges. */
+  margin: 2px;
+  width: calc(var(--tm-w) - 4px);
+  height: calc(var(--tm-h) - 4px);
+  box-shadow: inset 0 0 0 0.5px oklch(100% 0 0 / 0.12);
+  transition: transform var(--dur-sm) var(--ease-out), filter var(--dur-sm) var(--ease-out);
+}
+.tm-box:hover { transform: scale(1.012); filter: saturate(1.08) brightness(1.03); z-index: 2; }
 .tm-text {
-  color: var(--ink-solid); font-weight: 600; line-height: 1.3; text-align: center;
+  color: var(--ink-solid); font-weight: 650; line-height: 1.2; text-align: center;
+  letter-spacing: -0.01em; overflow-wrap: anywhere;
   display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;
 }
 

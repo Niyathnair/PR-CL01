@@ -59,6 +59,11 @@
   --band-high: oklch(78% 0.15 55);        /* High — orange */
   --band-severe: oklch(64% 0.20 25);      /* Severe — red */
 
+  /* ── Treemap tile fills — red (negative) / mild yellow (neutral) / green (positive) ── */
+  --tm-red: oklch(63% 0.19 25);           /* saturated red — biggest, loudest */
+  --tm-yellow: oklch(90% 0.10 92);        /* mild butter yellow — neutral */
+  --tm-green: oklch(85% 0.13 152);        /* soft green — smallest, calm */
+
   /* Tinted-glass fills for the small data chips (green / red / neutral). */
   --tint-good: oklch(84% 0.14 155 / 0.22);
   --tint-good-line: oklch(60% 0.15 155 / 0.55);
