@@ -1,75 +1,100 @@
-/* Design tokens — from DESIGN-SYSTEM.md, derived from the CRM analytics reference.
-   The discipline that makes this look work: lime is rationed, large text is
-   light, cards separate by tone and shadow rather than borders. */
+/* Hallmark · custom theme: "backlash control-room" · genre: atmospheric
+ * vibe: "late-night signal desk, neon lime on ink, danger glows"
+ * paper oklch(15% 0.012 265) · accent oklch(88% 0.19 128) lime (warm-cool green)
+ * display: Space Grotesk · body: Inter · axes: dark / grotesk-sans / chromatic-green
+ * Design tokens — a bespoke re-tune of the crowdLens system for a dark,
+ * high-signal control-room look. Lime keeps its brand role (rationed, load-
+ * bearing); a coral counter-accent carries danger. Band colours stay BRIGHT so
+ * the panels that print --ink text on them (chips, treemap, segbar) stay legible.
+ */
 
-:root {
-  --canvas: #efefef;
-  --surface: #f7f7f7;
-  --surface-raised: #ffffff;
-  --ink: #000000;
-  --hairline: #e4e4e4;
+:root,
+:root[data-theme="dark"] {
+  /* ── Surfaces: near-black ink, cool-blue undertone, layered by lightness ── */
+  --canvas: oklch(15% 0.012 265);        /* page — deep ink */
+  --surface: oklch(19.5% 0.014 265);     /* base card */
+  --surface-raised: oklch(24% 0.016 265);/* raised card / inputs */
+  --surface-2: oklch(28% 0.018 265);     /* hover / inner wells */
+  --ink: oklch(96% 0.01 120);            /* "ink" is now near-white text/marks */
+  --ink-solid: oklch(10% 0.01 265);      /* true dark — for text ON bright bands */
+  --hairline: oklch(30% 0.014 265);
+  --hairline-soft: oklch(26% 0.012 265);
 
-  --lime: #c7f33c;
-  --lime-pale: #e1f2ae;
+  /* ── Brand accent: electric lime, the product's signature ── */
+  --lime: oklch(88% 0.19 128);
+  --lime-bright: oklch(91% 0.205 128);
+  --lime-pale: oklch(42% 0.10 128);      /* muted lime for fills on dark */
+  --lime-ghost: oklch(88% 0.19 128 / 0.12);
+  --lime-glow: oklch(88% 0.19 128 / 0.35);
 
-  --text-primary: #000000;
-  --text-secondary: #6b6b6b;
-  --text-tertiary: #a0a0a0;
+  /* ── Counter-accent: hot coral — danger, offense, the "backlash" colour ── */
+  --coral: oklch(66% 0.20 22);
+  --coral-bright: oklch(72% 0.21 22);
+  --coral-ghost: oklch(66% 0.20 22 / 0.14);
+  --coral-glow: oklch(66% 0.20 22 / 0.30);
 
-  /* Risk bands — lime keeps its role for Clear, a documented step to amber/
-     orange/red for the upper bands. These appear ONLY on band indicators. */
-  --band-clear: #c7f33c;
-  --band-low: #e1f2ae;
-  --band-elevated: #f5c518;
-  --band-high: #f07a2b;
-  --band-severe: #d93636;
+  /* ── Text ── */
+  --text-primary: oklch(96% 0.01 120);
+  --text-secondary: oklch(72% 0.012 265);
+  --text-tertiary: oklch(56% 0.012 265);
 
-  --cat-1: #2e2e2e;
-  --cat-2: #c7f33c;
-  --cat-3: #7a8b99;
-  --cat-4: #e1f2ae;
-  --cat-5: #b5a88f;
-  --cat-6: #5c6670;
-  --cat-7: #d6d6d6;
+  /* ── Risk bands — bright, saturated, dark-text-safe (green→red ramp) ── */
+  --band-clear: oklch(86% 0.18 145);     /* Clear — green-lime */
+  --band-low: oklch(84% 0.15 120);       /* Low — lime */
+  --band-elevated: oklch(84% 0.16 85);   /* Elevated — amber */
+  --band-high: oklch(74% 0.17 45);       /* High — orange */
+  --band-severe: oklch(68% 0.20 22);     /* Severe — red-coral */
 
-  --radius-card: 24px;
+  /* ── Categorical (charts, avatars) — luminous on dark ── */
+  --cat-1: oklch(72% 0.012 265);
+  --cat-2: oklch(88% 0.19 128);
+  --cat-3: oklch(72% 0.11 230);
+  --cat-4: oklch(70% 0.14 155);
+  --cat-5: oklch(74% 0.10 60);
+  --cat-6: oklch(66% 0.13 300);
+  --cat-7: oklch(46% 0.014 265);
+
+  --radius-card: 22px;
   --radius-inner: 16px;
   --radius-input: 12px;
   --radius-pill: 999px;
 
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
-  --shadow-raised: 0 2px 4px rgba(0, 0, 0, 0.06), 0 12px 32px rgba(0, 0, 0, 0.08);
-  --shadow-overlay: 0 8px 16px rgba(0, 0, 0, 0.08), 0 24px 64px rgba(0, 0, 0, 0.12);
+  /* ── Shadows + glows: on dark, "elevation" reads as a faint ring + drop + glow ── */
+  --shadow-card: 0 1px 0 oklch(100% 0 0 / 0.04) inset, 0 8px 24px oklch(0% 0 0 / 0.45);
+  --shadow-raised: 0 1px 0 oklch(100% 0 0 / 0.06) inset, 0 16px 44px oklch(0% 0 0 / 0.55);
+  --shadow-overlay: 0 1px 0 oklch(100% 0 0 / 0.07) inset, 0 24px 70px oklch(0% 0 0 / 0.65);
+  --ring: 0 0 0 1px var(--hairline);
+  --ring-soft: 0 0 0 1px var(--hairline-soft);
 
   --font: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --dur-sm: 150ms;
-  --dur-md: 250ms;
-  --dur-lg: 400ms;
+  --dur-md: 260ms;
+  --dur-lg: 440ms;
 }
 
-:root:not([data-theme="light"]) {
-  @media (prefers-color-scheme: dark) {
-    --canvas: #0d0d0d;
-    --surface: #1a1a1a;
-    --surface-raised: #242424;
-    --hairline: #2e2e2e;
-    --text-primary: #f5f5f5;
-    --text-secondary: #9a9a9a;
-    --text-tertiary: #6e6e6e;
-    --lime-pale: #3d4a1c;
-  }
-}
-
-:root[data-theme="dark"] {
-  --canvas: #0d0d0d;
-  --surface: #1a1a1a;
-  --surface-raised: #242424;
-  --hairline: #2e2e2e;
-  --text-primary: #f5f5f5;
-  --text-secondary: #9a9a9a;
-  --text-tertiary: #6e6e6e;
-  --lime-pale: #3d4a1c;
+/* ── Optional light mode kept as a graceful, muted fallback ── */
+:root[data-theme="light"] {
+  --canvas: oklch(96.5% 0.004 265);
+  --surface: oklch(98.5% 0.003 265);
+  --surface-raised: oklch(100% 0 0);
+  --surface-2: oklch(94% 0.004 265);
+  --ink: oklch(18% 0.01 265);
+  --ink-solid: oklch(14% 0.01 265);
+  --hairline: oklch(90% 0.004 265);
+  --hairline-soft: oklch(93% 0.003 265);
+  --lime-pale: oklch(90% 0.10 128);
+  --lime-ghost: oklch(88% 0.19 128 / 0.22);
+  --lime-glow: oklch(88% 0.19 128 / 0.25);
+  --text-primary: oklch(18% 0.01 265);
+  --text-secondary: oklch(44% 0.012 265);
+  --text-tertiary: oklch(62% 0.012 265);
+  --shadow-card: 0 1px 2px oklch(0% 0 0 / 0.05), 0 4px 12px oklch(0% 0 0 / 0.06);
+  --shadow-raised: 0 2px 4px oklch(0% 0 0 / 0.06), 0 12px 32px oklch(0% 0 0 / 0.10);
+  --shadow-overlay: 0 8px 16px oklch(0% 0 0 / 0.08), 0 24px 64px oklch(0% 0 0 / 0.14);
 }
 
 * {
@@ -78,34 +103,46 @@
   padding: 0;
 }
 
+html, body { overflow-x: clip; }
+
 body {
   background: var(--canvas);
   color: var(--text-primary);
   font-family: var(--font);
-  font-size: 17.5px;
+  font-size: 17px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  /* Ambient grid + two faint accent auras — the control-room atmosphere. */
+  background-image:
+    radial-gradient(60rem 40rem at 12% -8%, var(--lime-glow), transparent 60%),
+    radial-gradient(55rem 40rem at 100% 0%, var(--coral-glow), transparent 55%),
+    linear-gradient(var(--hairline-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hairline-soft) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+  background-position: 0 0, 0 0, -1px -1px, -1px -1px;
+  background-attachment: fixed;
+}
+:root[data-theme="light"] body {
+  background-image:
+    radial-gradient(60rem 40rem at 12% -8%, var(--lime-ghost), transparent 60%),
+    radial-gradient(55rem 40rem at 100% 0%, var(--coral-ghost), transparent 55%);
+  background-size: 100% 100%, 100% 100%;
 }
 
-/* Large text is light; small text is not — the rule that defines this look. */
-h1, h2, h3 { font-weight: 300; letter-spacing: -0.02em; }
-h4, h5 { font-weight: 400; letter-spacing: -0.01em; }
+/* Display type is Space Grotesk; large is light, small is not. */
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.025em; }
+h4, h5 { font-weight: 500; letter-spacing: -0.01em; }
 
-button {
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  background: none;
-}
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 
 .tabular { font-variant-numeric: tabular-nums; }
 
-::selection { background: var(--lime); color: var(--ink); }
+::selection { background: var(--lime); color: var(--ink-solid); }
 
-/* Focus ring — visible on every surface in the palette. */
 :focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--lime);
   outline-offset: 2px;
 }
 
@@ -113,7 +150,7 @@ button {
   * { animation: none !important; transition: none !important; }
 }
 
-/* Thin, unobtrusive scrollbars. */
+/* Thin scrollbars tuned for dark. */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb {
   background: var(--hairline);
@@ -121,4 +158,5 @@ button {
   border: 3px solid transparent;
   background-clip: content-box;
 }
+::-webkit-scrollbar-thumb:hover { background: var(--cat-7); background-clip: content-box; }
 ::-webkit-scrollbar-track { background: transparent; }

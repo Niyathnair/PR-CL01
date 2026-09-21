@@ -220,16 +220,26 @@ export interface SimulateRequest {
 }
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`/v1${path}`, {
-    ...init,
-    headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`/v1${path}`, {
+      ...init,
+      headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
+    });
+  } catch {
+    // fetch throws on connection-refused (no backend running).
+    throw new Error("Backend not reachable on :8000. Start it, or click ▶ Demo to explore without a backend.");
+  }
   if (!res.ok) {
     let detail = res.statusText;
     try {
       detail = (await res.json()).detail || detail;
     } catch {
       /* ignore */
+    }
+    // The Vite proxy returns 500 when the backend is down.
+    if (res.status === 500 && /internal server error/i.test(detail)) {
+      detail = "Backend not reachable on :8000. Start it, or click ▶ Demo to explore without a backend.";
     }
     throw new Error(detail);
   }

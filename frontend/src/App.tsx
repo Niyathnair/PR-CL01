@@ -35,7 +35,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<View>("compose");
   const [health, setHealth] = useState<string>("");
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
     api.scenarios().then((s) => setScenarios(s.scenarios)).catch(() => {});
@@ -145,6 +145,14 @@ function Composer(props: any) {
   const { copy, setCopy, intent, setIntent, scenario, setScenario, scenarios, ageMin, setAgeMin, ageMax, setAgeMax, onRun, loading } = props;
   return (
     <div className="compose-wrap">
+      <div className="compose-hero">
+        <span className="compose-hero__eyebrow">◇ Pre-launch backlash simulator</span>
+        <h1 className="compose-hero__title">See who gets <em>hurt</em><br />before you hit publish.</h1>
+        <p className="compose-hero__sub">
+          Drop in your campaign copy. We simulate the audience — persona by persona, region by
+          region — and show you the backlash before the internet does.
+        </p>
+      </div>
       <Card raised>
         <div className="field">
           <label className="field__label">Marketing copy</label>
