@@ -1,100 +1,148 @@
-/* Hallmark · custom theme: "backlash control-room" · genre: atmospheric
- * vibe: "late-night signal desk, neon lime on ink, danger glows"
- * paper oklch(15% 0.012 265) · accent oklch(88% 0.19 128) lime (warm-cool green)
- * display: Space Grotesk · body: Inter · axes: dark / grotesk-sans / chromatic-green
- * Design tokens — a bespoke re-tune of the crowdLens system for a dark,
- * high-signal control-room look. Lime keeps its brand role (rationed, load-
- * bearing); a coral counter-accent carries danger. Band colours stay BRIGHT so
- * the panels that print --ink text on them (chips, treemap, segbar) stay legible.
+/* Hallmark · custom theme: "Liquid Glass — dark" · genre: atmospheric
+ * vibe: "Apple Liquid Glass, smoked translucent panels, specular light edges, calm depth"
+ * paper oklch(21% 0.02 265) · accent oklch(70% 0.15 250) system-blue (cool)
+ * display: SF Pro (system) · body: SF Pro (system) · axes: dark / geometric-sans / cool-blue
+ * A dark Liquid-Glass re-tune of the crowdLens system. Surfaces are translucent
+ * frosted glass (backdrop-filter blur + saturate); "elevation" reads as a bright
+ * specular top edge + soft layered shadow + subtle inner glow. Apple system blue
+ * is the load-bearing accent; coral still carries danger. Risk bands stay BRIGHT
+ * so panels printing --ink-solid text on them (chips, treemap, segbar) stay legible.
  */
 
 :root,
 :root[data-theme="dark"] {
-  /* ── Surfaces: near-black ink, cool-blue undertone, layered by lightness ── */
-  --canvas: oklch(15% 0.012 265);        /* page — deep ink */
-  --surface: oklch(19.5% 0.014 265);     /* base card */
-  --surface-raised: oklch(24% 0.016 265);/* raised card / inputs */
-  --surface-2: oklch(28% 0.018 265);     /* hover / inner wells */
-  --ink: oklch(96% 0.01 120);            /* "ink" is now near-white text/marks */
-  --ink-solid: oklch(10% 0.01 265);      /* true dark — for text ON bright bands */
-  --hairline: oklch(30% 0.014 265);
-  --hairline-soft: oklch(26% 0.012 265);
+  /* ── Backdrop: deep slate-blue, the room the glass floats in ── */
+  --canvas: oklch(21% 0.02 265);          /* page — deep cool slate */
 
-  /* ── Brand accent: electric lime, the product's signature ── */
+  /* ── Glass surfaces: translucent, layered by opacity + lightness.
+        These are the FILLS behind backdrop-filter; alpha is what makes them glass. */
+  --surface: oklch(50% 0.03 265 / 0.14);       /* base glass panel */
+  --surface-raised: oklch(58% 0.035 265 / 0.20); /* raised glass / inputs */
+  --surface-2: oklch(64% 0.04 265 / 0.26);     /* hover / inner wells */
+  --surface-solid: oklch(26% 0.022 265);       /* opaque fallback (menus, popovers over content) */
+
+  --ink: oklch(97% 0.008 250);            /* near-white text/marks on glass */
+  --ink-solid: oklch(16% 0.02 265);       /* true dark — text ON bright bands */
+
+  /* Specular edges: the light that catches the top of a glass pane and the
+     shadow that pools under it. This is the core Liquid-Glass tell. */
+  --edge-light: oklch(100% 0 0 / 0.22);   /* bright top-edge highlight */
+  --edge-light-soft: oklch(100% 0 0 / 0.10);
+  --edge-dark: oklch(0% 0 0 / 0.22);      /* dark bottom-edge */
+  --hairline: oklch(100% 0 0 / 0.14);
+  --hairline-soft: oklch(100% 0 0 / 0.07);
+
+  /* Glass blur recipe — reused everywhere via var() so the whole app tunes at once. */
+  --glass-blur: saturate(180%) blur(22px);
+  --glass-blur-strong: saturate(200%) blur(34px);
+
+  /* ── Brand accent: electric lime, the product's signature, over glass ── */
   --lime: oklch(88% 0.19 128);
   --lime-bright: oklch(91% 0.205 128);
-  --lime-pale: oklch(42% 0.10 128);      /* muted lime for fills on dark */
-  --lime-ghost: oklch(88% 0.19 128 / 0.12);
-  --lime-glow: oklch(88% 0.19 128 / 0.35);
+  --lime-pale: oklch(46% 0.11 128);       /* muted lime fill on dark */
+  --lime-ghost: oklch(88% 0.19 128 / 0.16);
+  --lime-glow: oklch(88% 0.19 128 / 0.34);
 
-  /* ── Counter-accent: hot coral — danger, offense, the "backlash" colour ── */
-  --coral: oklch(66% 0.20 22);
-  --coral-bright: oklch(72% 0.21 22);
-  --coral-ghost: oklch(66% 0.20 22 / 0.14);
-  --coral-glow: oklch(66% 0.20 22 / 0.30);
+  /* ── Counter-accent: warm coral — danger, offense, the "backlash" colour ── */
+  --coral: oklch(68% 0.18 22);
+  --coral-bright: oklch(74% 0.19 22);
+  --coral-ghost: oklch(68% 0.18 22 / 0.16);
+  --coral-glow: oklch(68% 0.18 22 / 0.28);
 
   /* ── Text ── */
-  --text-primary: oklch(96% 0.01 120);
-  --text-secondary: oklch(72% 0.012 265);
-  --text-tertiary: oklch(56% 0.012 265);
+  --text-primary: oklch(97% 0.008 250);
+  --text-secondary: oklch(78% 0.012 265);
+  --text-tertiary: oklch(62% 0.014 265);
 
   /* ── Risk bands — bright, saturated, dark-text-safe (green→red ramp) ── */
-  --band-clear: oklch(86% 0.18 145);     /* Clear — green-lime */
-  --band-low: oklch(84% 0.15 120);       /* Low — lime */
-  --band-elevated: oklch(84% 0.16 85);   /* Elevated — amber */
-  --band-high: oklch(74% 0.17 45);       /* High — orange */
-  --band-severe: oklch(68% 0.20 22);     /* Severe — red-coral */
+  --band-clear: oklch(84% 0.15 155);      /* Clear — green */
+  --band-low: oklch(83% 0.14 135);        /* Low — green-lime */
+  --band-elevated: oklch(84% 0.15 85);    /* Elevated — amber */
+  --band-high: oklch(76% 0.16 45);        /* High — orange */
+  --band-severe: oklch(69% 0.19 22);      /* Severe — red-coral */
 
-  /* ── Categorical (charts, avatars) — luminous on dark ── */
-  --cat-1: oklch(72% 0.012 265);
-  --cat-2: oklch(88% 0.19 128);
-  --cat-3: oklch(72% 0.11 230);
-  --cat-4: oklch(70% 0.14 155);
-  --cat-5: oklch(74% 0.10 60);
-  --cat-6: oklch(66% 0.13 300);
-  --cat-7: oklch(46% 0.014 265);
+  /* ── Categorical (charts, avatars) — luminous, Apple-system-ish on dark ── */
+  --cat-1: oklch(74% 0.03 265);           /* neutral slate */
+  --cat-2: oklch(88% 0.19 128);           /* electric lime (brand) */
+  --cat-3: oklch(72% 0.13 200);           /* teal-cyan */
+  --cat-4: oklch(72% 0.14 155);           /* green */
+  --cat-5: oklch(78% 0.13 75);            /* amber */
+  --cat-6: oklch(66% 0.15 300);           /* indigo-violet */
+  --cat-7: oklch(50% 0.03 265);           /* deep slate (avatars) */
 
-  --radius-card: 22px;
-  --radius-inner: 16px;
-  --radius-input: 12px;
+  /* Apple-style continuous, generous rounding. */
+  --radius-card: 26px;
+  --radius-inner: 18px;
+  --radius-input: 13px;
   --radius-pill: 999px;
 
-  /* ── Shadows + glows: on dark, "elevation" reads as a faint ring + drop + glow ── */
-  --shadow-card: 0 1px 0 oklch(100% 0 0 / 0.04) inset, 0 8px 24px oklch(0% 0 0 / 0.45);
-  --shadow-raised: 0 1px 0 oklch(100% 0 0 / 0.06) inset, 0 16px 44px oklch(0% 0 0 / 0.55);
-  --shadow-overlay: 0 1px 0 oklch(100% 0 0 / 0.07) inset, 0 24px 70px oklch(0% 0 0 / 0.65);
+  /* ── Shadows: glass elevation = specular inner edges + soft layered drop ── */
+  --shadow-card:
+    inset 0 1px 0 var(--edge-light),
+    inset 0 -1px 0 var(--edge-dark),
+    0 4px 14px oklch(0% 0 0 / 0.30),
+    0 18px 46px oklch(0% 0 0 / 0.42);
+  --shadow-raised:
+    inset 0 1px 0 var(--edge-light),
+    inset 0 -1px 0 var(--edge-dark),
+    0 8px 22px oklch(0% 0 0 / 0.36),
+    0 28px 70px oklch(0% 0 0 / 0.52);
+  --shadow-overlay:
+    inset 0 1px 0 var(--edge-light),
+    inset 0 -1px 0 var(--edge-dark),
+    0 16px 40px oklch(0% 0 0 / 0.42),
+    0 40px 100px oklch(0% 0 0 / 0.62);
   --ring: 0 0 0 1px var(--hairline);
   --ring-soft: 0 0 0 1px var(--hairline-soft);
 
-  --font: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  /* SF Pro first, with the loaded Google fonts as the cross-platform fallback. */
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+
+  /* Apple-ish spring-adjacent easings (no overshoot on UI state). */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --dur-sm: 150ms;
-  --dur-md: 260ms;
-  --dur-lg: 440ms;
+  --dur-sm: 160ms;
+  --dur-md: 280ms;
+  --dur-lg: 460ms;
 }
 
-/* ── Optional light mode kept as a graceful, muted fallback ── */
+/* ── Light Liquid-Glass fallback — bright frosted glass on a soft backdrop ── */
 :root[data-theme="light"] {
-  --canvas: oklch(96.5% 0.004 265);
-  --surface: oklch(98.5% 0.003 265);
-  --surface-raised: oklch(100% 0 0);
-  --surface-2: oklch(94% 0.004 265);
-  --ink: oklch(18% 0.01 265);
-  --ink-solid: oklch(14% 0.01 265);
-  --hairline: oklch(90% 0.004 265);
-  --hairline-soft: oklch(93% 0.003 265);
-  --lime-pale: oklch(90% 0.10 128);
-  --lime-ghost: oklch(88% 0.19 128 / 0.22);
-  --lime-glow: oklch(88% 0.19 128 / 0.25);
-  --text-primary: oklch(18% 0.01 265);
-  --text-secondary: oklch(44% 0.012 265);
-  --text-tertiary: oklch(62% 0.012 265);
-  --shadow-card: 0 1px 2px oklch(0% 0 0 / 0.05), 0 4px 12px oklch(0% 0 0 / 0.06);
-  --shadow-raised: 0 2px 4px oklch(0% 0 0 / 0.06), 0 12px 32px oklch(0% 0 0 / 0.10);
-  --shadow-overlay: 0 8px 16px oklch(0% 0 0 / 0.08), 0 24px 64px oklch(0% 0 0 / 0.14);
+  --canvas: oklch(94% 0.01 255);
+  --surface: oklch(100% 0 0 / 0.55);
+  --surface-raised: oklch(100% 0 0 / 0.68);
+  --surface-2: oklch(100% 0 0 / 0.80);
+  --surface-solid: oklch(99% 0.003 255);
+  --ink: oklch(22% 0.02 265);
+  --ink-solid: oklch(16% 0.02 265);
+  --edge-light: oklch(100% 0 0 / 0.75);
+  --edge-light-soft: oklch(100% 0 0 / 0.5);
+  --edge-dark: oklch(0% 0 0 / 0.06);
+  --hairline: oklch(0% 0 0 / 0.09);
+  --hairline-soft: oklch(0% 0 0 / 0.05);
+  --lime-pale: oklch(86% 0.13 128);
+  --lime-ghost: oklch(80% 0.17 128 / 0.24);
+  --lime-glow: oklch(84% 0.18 128 / 0.28);
+  --coral-ghost: oklch(68% 0.18 22 / 0.14);
+  --text-primary: oklch(22% 0.02 265);
+  --text-secondary: oklch(46% 0.015 265);
+  --text-tertiary: oklch(60% 0.014 265);
+  --cat-1: oklch(58% 0.03 265);
+  --cat-7: oklch(80% 0.02 265);
+  --shadow-card:
+    inset 0 1px 0 var(--edge-light),
+    0 2px 8px oklch(0% 0 0 / 0.06),
+    0 14px 34px oklch(0% 0 0 / 0.10);
+  --shadow-raised:
+    inset 0 1px 0 var(--edge-light),
+    0 4px 12px oklch(0% 0 0 / 0.08),
+    0 22px 54px oklch(0% 0 0 / 0.14);
+  --shadow-overlay:
+    inset 0 1px 0 var(--edge-light),
+    0 10px 24px oklch(0% 0 0 / 0.10),
+    0 34px 84px oklch(0% 0 0 / 0.18);
 }
 
 * {
@@ -113,36 +161,33 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-  /* Ambient grid + two faint accent auras — the control-room atmosphere. */
+  /* Liquid-Glass ambient: broad, soft colour fields the glass refracts —
+     a cool blue wash top-left, a warm coral bloom top-right, over the slate. */
   background-image:
-    radial-gradient(60rem 40rem at 12% -8%, var(--lime-glow), transparent 60%),
-    radial-gradient(55rem 40rem at 100% 0%, var(--coral-glow), transparent 55%),
-    linear-gradient(var(--hairline-soft) 1px, transparent 1px),
-    linear-gradient(90deg, var(--hairline-soft) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
-  background-position: 0 0, 0 0, -1px -1px, -1px -1px;
+    radial-gradient(70rem 52rem at 8% -12%, oklch(62% 0.12 250 / 0.30), transparent 62%),
+    radial-gradient(60rem 46rem at 104% -6%, var(--coral-glow), transparent 58%),
+    radial-gradient(80rem 60rem at 50% 120%, oklch(56% 0.08 250 / 0.22), transparent 60%);
   background-attachment: fixed;
 }
 :root[data-theme="light"] body {
   background-image:
-    radial-gradient(60rem 40rem at 12% -8%, var(--lime-ghost), transparent 60%),
-    radial-gradient(55rem 40rem at 100% 0%, var(--coral-ghost), transparent 55%);
-  background-size: 100% 100%, 100% 100%;
+    radial-gradient(70rem 52rem at 8% -12%, oklch(75% 0.10 250 / 0.55), transparent 62%),
+    radial-gradient(60rem 46rem at 104% -6%, oklch(80% 0.10 22 / 0.35), transparent 58%),
+    radial-gradient(80rem 60rem at 50% 120%, oklch(82% 0.07 200 / 0.4), transparent 60%);
 }
 
-/* Display type is Space Grotesk; large is light, small is not. */
-h1, h2, h3 { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.025em; }
-h4, h5 { font-weight: 500; letter-spacing: -0.01em; }
+/* Display type — SF-style, tight tracking on large sizes. */
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
+h4, h5 { font-weight: 600; letter-spacing: -0.01em; }
 
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 
 .tabular { font-variant-numeric: tabular-nums; }
 
-::selection { background: var(--lime); color: var(--ink-solid); }
+::selection { background: var(--lime-ghost); color: var(--text-primary); }
 
 :focus-visible {
-  outline: 2px solid var(--lime);
+  outline: 2px solid var(--lime-bright);
   outline-offset: 2px;
 }
 
@@ -150,13 +195,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   * { animation: none !important; transition: none !important; }
 }
 
-/* Thin scrollbars tuned for dark. */
-::-webkit-scrollbar { width: 10px; height: 10px; }
+/* Thin, glassy scrollbars. */
+::-webkit-scrollbar { width: 11px; height: 11px; }
 ::-webkit-scrollbar-thumb {
-  background: var(--hairline);
+  background: var(--surface-2);
   border-radius: var(--radius-pill);
   border: 3px solid transparent;
   background-clip: content-box;
 }
-::-webkit-scrollbar-thumb:hover { background: var(--cat-7); background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: oklch(70% 0.04 265 / 0.4); background-clip: content-box; }
 ::-webkit-scrollbar-track { background: transparent; }
