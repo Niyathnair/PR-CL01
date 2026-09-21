@@ -51,7 +51,7 @@ export function Chip({
     tone === "band" && color
       ? { background: color, color: "var(--ink)" }
       : tone === "accent"
-      ? { background: "var(--lime)", color: "var(--ink)" }
+      ? { background: "var(--lime)", color: "var(--on-accent, var(--ink))" }
       : undefined;
   return (
     <span className={`chip chip--${tone}`} style={style}>

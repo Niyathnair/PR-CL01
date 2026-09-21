@@ -1,148 +1,98 @@
-/* Hallmark · custom theme: "Liquid Glass — dark" · genre: atmospheric
- * vibe: "Apple Liquid Glass, smoked translucent panels, specular light edges, calm depth"
- * paper oklch(21% 0.02 265) · accent oklch(70% 0.15 250) system-blue (cool)
- * display: SF Pro (system) · body: SF Pro (system) · axes: dark / geometric-sans / cool-blue
- * A dark Liquid-Glass re-tune of the crowdLens system. Surfaces are translucent
- * frosted glass (backdrop-filter blur + saturate); "elevation" reads as a bright
- * specular top edge + soft layered shadow + subtle inner glow. Apple system blue
- * is the load-bearing accent; coral still carries danger. Risk bands stay BRIGHT
- * so panels printing --ink-solid text on them (chips, treemap, segbar) stay legible.
+/* Hallmark · custom theme: "Growth — marble mono" · genre: modern-minimal
+ * vibe: "monochrome SaaS dashboard floating on soft marble paper"
+ * paper oklch(97% 0.002 265) · accent oklch(16% 0 0) black (neutral) · studied: yes (image)
+ * display: Inter · body: Inter · axes: light / grotesk-sans / neutral
+ * A grayscale re-skin of crowdLens after the "Growth" reference: near-white
+ * paper, pure-black feature cards, gray fills, black pill buttons, hairline
+ * borders + soft shadows, and a CSS-built marble backdrop behind a floating
+ * app card. Black IS the accent — no chromatic brand colour. Risk bands stay
+ * bright/saturated (dark text prints on them: chips, treemap, segbar).
  */
 
 :root,
-:root[data-theme="dark"] {
-  /* ── Backdrop: deep slate-blue, the room the glass floats in ── */
-  --canvas: oklch(21% 0.02 265);          /* page — deep cool slate */
+:root[data-theme="dark"],
+:root[data-theme="light"] {
+  /* ── Paper + surfaces: near-white, layered by lightness ── */
+  --canvas: oklch(96.5% 0.002 265);       /* the floating app card's inside */
+  --surface: oklch(100% 0 0);             /* white card */
+  --surface-raised: oklch(100% 0 0);      /* white raised card / inputs sit on grey */
+  --surface-2: oklch(95.5% 0.002 265);    /* grey inner well / input fill / hover */
+  --surface-solid: oklch(100% 0 0);
 
-  /* ── Glass surfaces: translucent, layered by opacity + lightness.
-        These are the FILLS behind backdrop-filter; alpha is what makes them glass. */
-  --surface: oklch(50% 0.03 265 / 0.14);       /* base glass panel */
-  --surface-raised: oklch(58% 0.035 265 / 0.20); /* raised glass / inputs */
-  --surface-2: oklch(64% 0.04 265 / 0.26);     /* hover / inner wells */
-  --surface-solid: oklch(26% 0.022 265);       /* opaque fallback (menus, popovers over content) */
+  /* Feature "ink" cards — the pure-black panels from the reference. */
+  --ink-panel: oklch(17% 0.004 265);      /* black feature card */
+  --ink-panel-2: oklch(23% 0.004 265);    /* raised element inside a black card */
 
-  --ink: oklch(97% 0.008 250);            /* near-white text/marks on glass */
-  --ink-solid: oklch(16% 0.02 265);       /* true dark — text ON bright bands */
+  --ink: oklch(18% 0.006 265);            /* primary text/marks on paper */
+  --ink-solid: oklch(15% 0.004 265);      /* true black — text on bright bands + pills text is white, see app.css */
+  --hairline: oklch(88% 0.003 265);
+  --hairline-soft: oklch(92% 0.003 265);
 
-  /* Specular edges: the light that catches the top of a glass pane and the
-     shadow that pools under it. This is the core Liquid-Glass tell. */
-  --edge-light: oklch(100% 0 0 / 0.22);   /* bright top-edge highlight */
-  --edge-light-soft: oklch(100% 0 0 / 0.10);
-  --edge-dark: oklch(0% 0 0 / 0.22);      /* dark bottom-edge */
-  --hairline: oklch(100% 0 0 / 0.14);
-  --hairline-soft: oklch(100% 0 0 / 0.07);
+  /* ── Accent = black. Named --lime for 1:1 class reuse; the colour is ink. ── */
+  --lime: oklch(17% 0.004 265);           /* black pill / active fill */
+  --lime-bright: oklch(24% 0.004 265);    /* hover on black */
+  --lime-pale: oklch(72% 0.004 265);      /* muted grey fill on paper */
+  --lime-ghost: oklch(17% 0.004 265 / 0.06);
+  --lime-glow: oklch(17% 0.004 265 / 0.14);
+  --on-accent: oklch(100% 0 0);           /* text/marks ON the black accent fill */
 
-  /* Glass blur recipe — reused everywhere via var() so the whole app tunes at once. */
-  --glass-blur: saturate(180%) blur(22px);
-  --glass-blur-strong: saturate(200%) blur(34px);
-
-  /* ── Brand accent: electric lime, the product's signature, over glass ── */
-  --lime: oklch(88% 0.19 128);
-  --lime-bright: oklch(91% 0.205 128);
-  --lime-pale: oklch(46% 0.11 128);       /* muted lime fill on dark */
-  --lime-ghost: oklch(88% 0.19 128 / 0.16);
-  --lime-glow: oklch(88% 0.19 128 / 0.34);
-
-  /* ── Counter-accent: warm coral — danger, offense, the "backlash" colour ── */
-  --coral: oklch(68% 0.18 22);
-  --coral-bright: oklch(74% 0.19 22);
-  --coral-ghost: oklch(68% 0.18 22 / 0.16);
-  --coral-glow: oklch(68% 0.18 22 / 0.28);
+  /* ── Counter-accent: coral — danger only, the one place colour is allowed ── */
+  --coral: oklch(62% 0.20 25);
+  --coral-bright: oklch(58% 0.21 25);
+  --coral-ghost: oklch(62% 0.20 25 / 0.10);
+  --coral-glow: oklch(62% 0.20 25 / 0.16);
 
   /* ── Text ── */
-  --text-primary: oklch(97% 0.008 250);
-  --text-secondary: oklch(78% 0.012 265);
-  --text-tertiary: oklch(62% 0.014 265);
+  --text-primary: oklch(18% 0.006 265);
+  --text-secondary: oklch(45% 0.006 265);
+  --text-tertiary: oklch(60% 0.005 265);
+  /* On the black feature panels, text flips light — panels opt in via a class. */
+  --text-on-ink: oklch(97% 0.002 265);
+  --text-on-ink-dim: oklch(72% 0.004 265);
 
-  /* ── Risk bands — bright, saturated, dark-text-safe (green→red ramp) ── */
-  --band-clear: oklch(84% 0.15 155);      /* Clear — green */
-  --band-low: oklch(83% 0.14 135);        /* Low — green-lime */
-  --band-elevated: oklch(84% 0.15 85);    /* Elevated — amber */
-  --band-high: oklch(76% 0.16 45);        /* High — orange */
-  --band-severe: oklch(69% 0.19 22);      /* Severe — red-coral */
+  /* ── Risk bands — kept bright/saturated (dark text prints on them) ── */
+  --band-clear: oklch(84% 0.14 155);      /* Clear — green */
+  --band-low: oklch(85% 0.13 135);        /* Low — green-lime */
+  --band-elevated: oklch(86% 0.14 90);    /* Elevated — amber */
+  --band-high: oklch(78% 0.15 55);        /* High — orange */
+  --band-severe: oklch(64% 0.20 25);      /* Severe — red */
 
-  /* ── Categorical (charts, avatars) — luminous, Apple-system-ish on dark ── */
-  --cat-1: oklch(74% 0.03 265);           /* neutral slate */
-  --cat-2: oklch(88% 0.19 128);           /* electric lime (brand) */
-  --cat-3: oklch(72% 0.13 200);           /* teal-cyan */
-  --cat-4: oklch(72% 0.14 155);           /* green */
-  --cat-5: oklch(78% 0.13 75);            /* amber */
-  --cat-6: oklch(66% 0.15 300);           /* indigo-violet */
-  --cat-7: oklch(50% 0.03 265);           /* deep slate (avatars) */
+  /* ── Categorical — grayscale-leaning, one warm/one cool for legibility ── */
+  --cat-1: oklch(55% 0.004 265);          /* mid grey */
+  --cat-2: oklch(20% 0.004 265);          /* near-black */
+  --cat-3: oklch(70% 0.004 265);          /* light grey */
+  --cat-4: oklch(42% 0.004 265);          /* dark grey */
+  --cat-5: oklch(80% 0.004 265);          /* pale grey */
+  --cat-6: oklch(32% 0.004 265);          /* charcoal */
+  --cat-7: oklch(86% 0.003 265);          /* avatar grey */
 
-  /* Apple-style continuous, generous rounding. */
-  --radius-card: 26px;
-  --radius-inner: 18px;
-  --radius-input: 13px;
+  /* Generous, Growth-like rounding. */
+  --radius-card: 24px;
+  --radius-inner: 16px;
+  --radius-input: 12px;
   --radius-pill: 999px;
 
-  /* ── Shadows: glass elevation = specular inner edges + soft layered drop ── */
-  --shadow-card:
-    inset 0 1px 0 var(--edge-light),
-    inset 0 -1px 0 var(--edge-dark),
-    0 4px 14px oklch(0% 0 0 / 0.30),
-    0 18px 46px oklch(0% 0 0 / 0.42);
-  --shadow-raised:
-    inset 0 1px 0 var(--edge-light),
-    inset 0 -1px 0 var(--edge-dark),
-    0 8px 22px oklch(0% 0 0 / 0.36),
-    0 28px 70px oklch(0% 0 0 / 0.52);
-  --shadow-overlay:
-    inset 0 1px 0 var(--edge-light),
-    inset 0 -1px 0 var(--edge-dark),
-    0 16px 40px oklch(0% 0 0 / 0.42),
-    0 40px 100px oklch(0% 0 0 / 0.62);
+  /* ── Shadows: soft, low, light-mode elevation ── */
+  --shadow-card: 0 1px 2px oklch(0% 0 0 / 0.04), 0 6px 16px oklch(0% 0 0 / 0.06);
+  --shadow-raised: 0 2px 6px oklch(0% 0 0 / 0.05), 0 14px 34px oklch(0% 0 0 / 0.09);
+  --shadow-overlay: 0 8px 20px oklch(0% 0 0 / 0.10), 0 28px 64px oklch(0% 0 0 / 0.16);
   --ring: 0 0 0 1px var(--hairline);
   --ring-soft: 0 0 0 1px var(--hairline-soft);
 
-  /* SF Pro first, with the loaded Google fonts as the cross-platform fallback. */
-  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
-  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
-
-  /* Apple-ish spring-adjacent easings (no overshoot on UI state). */
+  --font: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --dur-sm: 160ms;
-  --dur-md: 280ms;
-  --dur-lg: 460ms;
-}
+  --dur-sm: 150ms;
+  --dur-md: 260ms;
+  --dur-lg: 440ms;
 
-/* ── Light Liquid-Glass fallback — bright frosted glass on a soft backdrop ── */
-:root[data-theme="light"] {
-  --canvas: oklch(94% 0.01 255);
-  --surface: oklch(100% 0 0 / 0.55);
-  --surface-raised: oklch(100% 0 0 / 0.68);
-  --surface-2: oklch(100% 0 0 / 0.80);
-  --surface-solid: oklch(99% 0.003 255);
-  --ink: oklch(22% 0.02 265);
-  --ink-solid: oklch(16% 0.02 265);
-  --edge-light: oklch(100% 0 0 / 0.75);
-  --edge-light-soft: oklch(100% 0 0 / 0.5);
-  --edge-dark: oklch(0% 0 0 / 0.06);
-  --hairline: oklch(0% 0 0 / 0.09);
-  --hairline-soft: oklch(0% 0 0 / 0.05);
-  --lime-pale: oklch(86% 0.13 128);
-  --lime-ghost: oklch(80% 0.17 128 / 0.24);
-  --lime-glow: oklch(84% 0.18 128 / 0.28);
-  --coral-ghost: oklch(68% 0.18 22 / 0.14);
-  --text-primary: oklch(22% 0.02 265);
-  --text-secondary: oklch(46% 0.015 265);
-  --text-tertiary: oklch(60% 0.014 265);
-  --cat-1: oklch(58% 0.03 265);
-  --cat-7: oklch(80% 0.02 265);
-  --shadow-card:
-    inset 0 1px 0 var(--edge-light),
-    0 2px 8px oklch(0% 0 0 / 0.06),
-    0 14px 34px oklch(0% 0 0 / 0.10);
-  --shadow-raised:
-    inset 0 1px 0 var(--edge-light),
-    0 4px 12px oklch(0% 0 0 / 0.08),
-    0 22px 54px oklch(0% 0 0 / 0.14);
-  --shadow-overlay:
-    inset 0 1px 0 var(--edge-light),
-    0 10px 24px oklch(0% 0 0 / 0.10),
-    0 34px 84px oklch(0% 0 0 / 0.18);
+  /* ── Marble backdrop: layered greyscale swirl, pure CSS. Deeper than the
+        card so the floating app reads as lifted off the paper. ── */
+  --marble-1: oklch(82% 0.003 265);
+  --marble-2: oklch(90% 0.002 265);
+  --marble-3: oklch(74% 0.004 265);
 }
 
 * {
@@ -154,40 +104,37 @@
 html, body { overflow-x: clip; }
 
 body {
-  background: var(--canvas);
+  background: var(--marble-2);
   color: var(--text-primary);
   font-family: var(--font);
   font-size: 17px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Liquid-Glass ambient: broad, soft colour fields the glass refracts —
-     a cool blue wash top-left, a warm coral bloom top-right, over the slate. */
+  /* CSS marble — overlapping soft radial + conic sweeps in greys build a
+     paper/marble swirl. Fixed so it sits behind the whole scroll. */
   background-image:
-    radial-gradient(70rem 52rem at 8% -12%, oklch(62% 0.12 250 / 0.30), transparent 62%),
-    radial-gradient(60rem 46rem at 104% -6%, var(--coral-glow), transparent 58%),
-    radial-gradient(80rem 60rem at 50% 120%, oklch(56% 0.08 250 / 0.22), transparent 60%);
+    radial-gradient(60rem 40rem at 8% 12%, var(--marble-1), transparent 55%),
+    radial-gradient(70rem 50rem at 92% 8%, var(--marble-3), transparent 50%),
+    radial-gradient(80rem 60rem at 50% 108%, var(--marble-1), transparent 60%),
+    repeating-conic-gradient(from 30deg at 20% 30%, var(--marble-2) 0deg, var(--marble-1) 8deg, var(--marble-3) 16deg, var(--marble-2) 24deg),
+    repeating-conic-gradient(from -20deg at 80% 70%, var(--marble-3) 0deg, var(--marble-2) 10deg, var(--marble-1) 20deg, var(--marble-3) 30deg);
+  background-blend-mode: normal, normal, normal, soft-light, soft-light;
   background-attachment: fixed;
 }
-:root[data-theme="light"] body {
-  background-image:
-    radial-gradient(70rem 52rem at 8% -12%, oklch(75% 0.10 250 / 0.55), transparent 62%),
-    radial-gradient(60rem 46rem at 104% -6%, oklch(80% 0.10 22 / 0.35), transparent 58%),
-    radial-gradient(80rem 60rem at 50% 120%, oklch(82% 0.07 200 / 0.4), transparent 60%);
-}
 
-/* Display type — SF-style, tight tracking on large sizes. */
-h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
+/* Display type — grotesk, bold, tight. */
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; }
 h4, h5 { font-weight: 600; letter-spacing: -0.01em; }
 
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 
 .tabular { font-variant-numeric: tabular-nums; }
 
-::selection { background: var(--lime-ghost); color: var(--text-primary); }
+::selection { background: var(--ink); color: oklch(100% 0 0); }
 
 :focus-visible {
-  outline: 2px solid var(--lime-bright);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 
@@ -195,13 +142,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   * { animation: none !important; transition: none !important; }
 }
 
-/* Thin, glassy scrollbars. */
+/* Thin, light scrollbars. */
 ::-webkit-scrollbar { width: 11px; height: 11px; }
 ::-webkit-scrollbar-thumb {
-  background: var(--surface-2);
+  background: var(--hairline);
   border-radius: var(--radius-pill);
   border: 3px solid transparent;
   background-clip: content-box;
 }
-::-webkit-scrollbar-thumb:hover { background: oklch(70% 0.04 265 / 0.4); background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--cat-3); background-clip: content-box; }
 ::-webkit-scrollbar-track { background: transparent; }
