@@ -96,19 +96,73 @@ export default function App() {
   return (
     <div className="app">
       <nav className="sidebar">
-        <div className="sidebar__logo">c</div>
-        <IconButton title="Compose" active={view === "compose"} onClick={() => setView("compose")}>✎</IconButton>
-        <IconButton title="Dashboard" active={view === "dashboard"} onClick={() => report && setView("dashboard")}>▤</IconButton>
+        <div className="sidebar__brand">
+          <div className="sidebar__logo">c</div>
+          <div className="sidebar__wordmark">crowdLens</div>
+        </div>
+
+        <button
+          className={`navitem ${view === "compose" ? "navitem--active" : ""}`}
+          onClick={() => setView("compose")}
+        >
+          <span className="navitem__icon">✎</span> Compose
+        </button>
+        <button
+          className={`navitem ${view === "dashboard" ? "navitem--active" : ""}`}
+          onClick={() => report && setView("dashboard")}
+          disabled={!report}
+        >
+          <span className="navitem__icon">▤</span> Dashboard
+          {report && <span className="navitem__badge">live</span>}
+        </button>
+        <button className="navitem" disabled>
+          <span className="navitem__icon">◔</span> Personas
+        </button>
+        <button className="navitem" disabled>
+          <span className="navitem__icon">◈</span> Regions
+        </button>
+        <button className="navitem" disabled>
+          <span className="navitem__icon">✿</span> Rewrites
+        </button>
+
+        <div className="sidebar__section">Sources</div>
+        <button className="navitem" disabled>
+          <span className="navitem__icon">◒</span> Reddit
+        </button>
+        <button className="navitem" disabled>
+          <span className="navitem__icon">✕</span> X / Twitter
+        </button>
+        <button className="navitem" disabled>
+          <span className="navitem__icon">＋</span> Add source
+        </button>
+
+        <div className="sidebar__section">Workspace</div>
+        <button className="navitem" disabled>
+          <span className="navitem__icon">◇</span> History
+        </button>
+        <button className="navitem" disabled>
+          <span className="navitem__icon">⚙</span> Settings
+        </button>
+
         <div className="sidebar__spacer" />
+
         <IconButton title="Toggle theme" onClick={() => setTheme((t) => (t === "light" ? "dark" : "light"))}>
           {theme === "light" ? "☾" : "☀"}
         </IconButton>
+
+        <div className="sidebar__foot">
+          <div className="sidebar__avatar">U</div>
+          <div className="sidebar__who">
+            <b>User</b>
+            <span>Free plan</span>
+          </div>
+        </div>
       </nav>
 
       <main className="main main--full">
         <header className="topbar">
           <div>
-            <h1 className="topbar__title">crowdLens</h1>
+            <h1 className="topbar__greet">Hi, <em>User!</em></h1>
             <div className="topbar__sub">{health || "connecting…"}</div>
           </div>
           <div className="topbar__spacer" />
@@ -122,6 +176,11 @@ export default function App() {
               ))}
             </div>
           )}
+          <div className="topcluster">
+            <button className="topcluster__btn" title="Search" aria-label="Search">⌕</button>
+            <button className="topcluster__btn" title="Notifications" aria-label="Notifications">◔</button>
+            <div className="topcluster__avatar">U</div>
+          </div>
         </header>
 
         {error && <div className="alert" style={{ borderLeftColor: "var(--band-severe)" }}><strong>Error:</strong> {error}</div>}

@@ -1,54 +1,56 @@
-/* Hallmark · custom theme: "Growth — marble mono" · genre: modern-minimal
- * vibe: "monochrome SaaS dashboard floating on soft marble paper"
- * paper oklch(97% 0.002 265) · accent oklch(16% 0 0) black (neutral) · studied: yes (image)
+/* Hallmark · custom theme: "Growth — marble glass" · genre: modern-minimal
+ * vibe: "monochrome SaaS dashboard as frosted glass over real white marble"
+ * paper oklch(97% 0.002 265) · accent oklch(18% 0 0) black (neutral) · studied: yes (image + marble photo)
  * display: Inter · body: Inter · axes: light / grotesk-sans / neutral
- * A grayscale re-skin of crowdLens after the "Growth" reference: near-white
- * paper, pure-black feature cards, gray fills, black pill buttons, hairline
- * borders + soft shadows, and a CSS-built marble backdrop behind a floating
- * app card. Black IS the accent — no chromatic brand colour. Risk bands stay
- * bright/saturated (dark text prints on them: chips, treemap, segbar).
+ * A black-and-white re-skin: a real white-marble PHOTO fills the viewport, and
+ * every surface above it is genuine frosted glass (translucent white +
+ * backdrop-filter blur, per joshwcomeau.com/css/backdrop-filter) so the marble
+ * veining shows through, blurred. Black IS the accent — no chromatic brand
+ * colour. The ONLY colour is data: risk bands (red/amber/green) + neutral, and
+ * they appear as small tinted-glass chips. Bands stay bright/saturated because
+ * dark text prints on them (chips, treemap, segbar, comparison pills).
  */
 
 :root,
 :root[data-theme="dark"],
 :root[data-theme="light"] {
-  /* ── Paper + surfaces: near-white, layered by lightness ── */
-  --canvas: oklch(96.5% 0.002 265);       /* the floating app card's inside */
-  --surface: oklch(100% 0 0);             /* white card */
-  --surface-raised: oklch(100% 0 0);      /* white raised card / inputs sit on grey */
-  --surface-2: oklch(95.5% 0.002 265);    /* grey inner well / input fill / hover */
-  --surface-solid: oklch(100% 0 0);
+  /* ── Paper + surfaces: TRANSLUCENT white so marble blurs through the glass ── */
+  --canvas: oklch(98% 0.001 265 / 0.34);   /* the floating app card — lets marble show */
+  --surface: oklch(100% 0 0 / 0.55);       /* frosted white card */
+  --surface-raised: oklch(100% 0 0 / 0.66);/* frosted raised card / inputs */
+  --surface-2: oklch(97% 0.001 265 / 0.5); /* frosted inner well / input fill / hover */
+  --surface-solid: oklch(99% 0.001 265);   /* opaque fallback where blur can't apply */
 
-  /* Feature "ink" cards — the pure-black panels from the reference. */
-  --ink-panel: oklch(17% 0.004 265);      /* black feature card */
-  --ink-panel-2: oklch(23% 0.004 265);    /* raised element inside a black card */
+  /* Feature "ink" cards — the pure-black panels from the reference (opaque). */
+  --ink-panel: oklch(19% 0.003 265 / 0.9); /* near-black feature card, slight translucency */
+  --ink-panel-2: oklch(25% 0.003 265);     /* raised element inside a black card */
 
-  --ink: oklch(18% 0.006 265);            /* primary text/marks on paper */
-  --ink-solid: oklch(15% 0.004 265);      /* true black — text on bright bands + pills text is white, see app.css */
-  --hairline: oklch(88% 0.003 265);
-  --hairline-soft: oklch(92% 0.003 265);
+  --ink: oklch(18% 0.004 265);             /* primary text/marks on paper */
+  --ink-solid: oklch(15% 0.003 265);       /* true black — text on bright bands */
+  --hairline: oklch(72% 0.004 265 / 0.5);
+  --hairline-soft: oklch(80% 0.003 265 / 0.4);
 
   /* ── Accent = black. Named --lime for 1:1 class reuse; the colour is ink. ── */
-  --lime: oklch(17% 0.004 265);           /* black pill / active fill */
-  --lime-bright: oklch(24% 0.004 265);    /* hover on black */
-  --lime-pale: oklch(72% 0.004 265);      /* muted grey fill on paper */
-  --lime-ghost: oklch(17% 0.004 265 / 0.06);
-  --lime-glow: oklch(17% 0.004 265 / 0.14);
-  --on-accent: oklch(100% 0 0);           /* text/marks ON the black accent fill */
+  --lime: oklch(20% 0.004 265);            /* black pill / active fill */
+  --lime-bright: oklch(28% 0.004 265);     /* hover on black */
+  --lime-pale: oklch(72% 0.004 265);       /* muted grey fill on paper */
+  --lime-ghost: oklch(20% 0.004 265 / 0.08);
+  --lime-glow: oklch(20% 0.004 265 / 0.16);
+  --on-accent: oklch(100% 0 0);            /* text/marks ON the black accent fill */
 
-  /* ── Counter-accent: coral — danger only, the one place colour is allowed ── */
+  /* ── Counter-accent: coral — danger only, one place colour is allowed ── */
   --coral: oklch(62% 0.20 25);
   --coral-bright: oklch(58% 0.21 25);
-  --coral-ghost: oklch(62% 0.20 25 / 0.10);
-  --coral-glow: oklch(62% 0.20 25 / 0.16);
+  --coral-ghost: oklch(62% 0.20 25 / 0.14);
+  --coral-glow: oklch(62% 0.20 25 / 0.18);
 
   /* ── Text ── */
-  --text-primary: oklch(18% 0.006 265);
-  --text-secondary: oklch(45% 0.006 265);
-  --text-tertiary: oklch(60% 0.005 265);
+  --text-primary: oklch(20% 0.004 265);
+  --text-secondary: oklch(40% 0.004 265);
+  --text-tertiary: oklch(52% 0.004 265);
   /* On the black feature panels, text flips light — panels opt in via a class. */
   --text-on-ink: oklch(97% 0.002 265);
-  --text-on-ink-dim: oklch(72% 0.004 265);
+  --text-on-ink-dim: oklch(74% 0.003 265);
 
   /* ── Risk bands — kept bright/saturated (dark text prints on them) ── */
   --band-clear: oklch(84% 0.14 155);      /* Clear — green */
@@ -57,14 +59,22 @@
   --band-high: oklch(78% 0.15 55);        /* High — orange */
   --band-severe: oklch(64% 0.20 25);      /* Severe — red */
 
-  /* ── Categorical — grayscale-leaning, one warm/one cool for legibility ── */
-  --cat-1: oklch(55% 0.004 265);          /* mid grey */
-  --cat-2: oklch(20% 0.004 265);          /* near-black */
-  --cat-3: oklch(70% 0.004 265);          /* light grey */
-  --cat-4: oklch(42% 0.004 265);          /* dark grey */
-  --cat-5: oklch(80% 0.004 265);          /* pale grey */
-  --cat-6: oklch(32% 0.004 265);          /* charcoal */
-  --cat-7: oklch(86% 0.003 265);          /* avatar grey */
+  /* Tinted-glass fills for the small data chips (green / red / neutral). */
+  --tint-good: oklch(84% 0.14 155 / 0.22);
+  --tint-good-line: oklch(60% 0.15 155 / 0.55);
+  --tint-bad: oklch(64% 0.20 25 / 0.2);
+  --tint-bad-line: oklch(58% 0.21 25 / 0.55);
+  --tint-neutral: oklch(80% 0.003 265 / 0.3);
+  --tint-neutral-line: oklch(60% 0.004 265 / 0.4);
+
+  /* ── Categorical — grayscale-leaning ── */
+  --cat-1: oklch(52% 0.004 265);
+  --cat-2: oklch(22% 0.004 265);
+  --cat-3: oklch(68% 0.004 265);
+  --cat-4: oklch(40% 0.004 265);
+  --cat-5: oklch(78% 0.004 265);
+  --cat-6: oklch(32% 0.004 265);
+  --cat-7: oklch(84% 0.003 265);
 
   /* Generous, Growth-like rounding. */
   --radius-card: 24px;
@@ -72,10 +82,16 @@
   --radius-input: 12px;
   --radius-pill: 999px;
 
-  /* ── Shadows: soft, low, light-mode elevation ── */
-  --shadow-card: 0 1px 2px oklch(0% 0 0 / 0.04), 0 6px 16px oklch(0% 0 0 / 0.06);
-  --shadow-raised: 0 2px 6px oklch(0% 0 0 / 0.05), 0 14px 34px oklch(0% 0 0 / 0.09);
-  --shadow-overlay: 0 8px 20px oklch(0% 0 0 / 0.10), 0 28px 64px oklch(0% 0 0 / 0.16);
+  /* ── Glass: the frosted-blur recipe (per Josh Comeau). Surfaces are
+        translucent (above) and lift the marble through this blur. ── */
+  --glass-blur: saturate(115%) blur(16px);
+  --glass-blur-strong: saturate(120%) blur(26px);
+  --edge-light: inset 0 1px 0 oklch(100% 0 0 / 0.55);
+
+  /* ── Shadows: soft, low, neutral elevation ── */
+  --shadow-card: 0 1px 2px oklch(0% 0 0 / 0.05), 0 8px 20px oklch(0% 0 0 / 0.08);
+  --shadow-raised: 0 2px 6px oklch(0% 0 0 / 0.06), 0 18px 42px oklch(0% 0 0 / 0.12);
+  --shadow-overlay: 0 10px 26px oklch(0% 0 0 / 0.12), 0 34px 78px oklch(0% 0 0 / 0.2);
   --ring: 0 0 0 1px var(--hairline);
   --ring-soft: 0 0 0 1px var(--hairline-soft);
 
@@ -87,12 +103,6 @@
   --dur-sm: 150ms;
   --dur-md: 260ms;
   --dur-lg: 440ms;
-
-  /* ── Marble backdrop: layered greyscale swirl, pure CSS. Deeper than the
-        card so the floating app reads as lifted off the paper. ── */
-  --marble-1: oklch(82% 0.003 265);
-  --marble-2: oklch(90% 0.002 265);
-  --marble-3: oklch(74% 0.004 265);
 }
 
 * {
@@ -104,22 +114,22 @@
 html, body { overflow-x: clip; }
 
 body {
-  background: var(--marble-2);
   color: var(--text-primary);
   font-family: var(--font);
   font-size: 17px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* CSS marble — overlapping soft radial + conic sweeps in greys build a
-     paper/marble swirl. Fixed so it sits behind the whole scroll. */
+  /* Real white-marble photo fills the viewport, fixed behind the whole app so
+     the frosted-glass surfaces above have veining to blur through. A faint
+     white wash over it keeps text contrast and evens out darker veins. */
+  background-color: oklch(95% 0.001 265);
   background-image:
-    radial-gradient(60rem 40rem at 8% 12%, var(--marble-1), transparent 55%),
-    radial-gradient(70rem 50rem at 92% 8%, var(--marble-3), transparent 50%),
-    radial-gradient(80rem 60rem at 50% 108%, var(--marble-1), transparent 60%),
-    repeating-conic-gradient(from 30deg at 20% 30%, var(--marble-2) 0deg, var(--marble-1) 8deg, var(--marble-3) 16deg, var(--marble-2) 24deg),
-    repeating-conic-gradient(from -20deg at 80% 70%, var(--marble-3) 0deg, var(--marble-2) 10deg, var(--marble-1) 20deg, var(--marble-3) 30deg);
-  background-blend-mode: normal, normal, normal, soft-light, soft-light;
+    linear-gradient(oklch(100% 0 0 / 0.32), oklch(100% 0 0 / 0.32)),
+    url("/bg/marble.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   background-attachment: fixed;
 }
 
